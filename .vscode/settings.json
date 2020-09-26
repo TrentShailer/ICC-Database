@@ -1,0 +1,14 @@
+{
+	"sqltools.connections": [
+		{
+			"database": "icc_database",
+			"driver": "PostgreSQL",
+			"name": "icc_database",
+			"password": "admin",
+			"port": 5432,
+			"previewLimit": 50,
+			"server": "localhost",
+			"username": "postgres"
+		}
+	]
+}
