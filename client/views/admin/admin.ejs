@@ -80,9 +80,31 @@
 						<div class="modal-body">
 							<div class="form-row">
 								<div class="col mb-3">
-									<label for="name">Catagory Name</label>
+									<label for="edit_name">Template Name</label>
 									<input type="text" class="form-control" id="edit_name" value="" />
-									<div id="edit_error" class="invalid-feedback">This catagory already exists</div>
+									<div id="edit_error" class="invalid-feedback">Invalid name</div>
+								</div>
+							</div>
+							<div id="edit_form_duration" class="form-row">
+								<div class="col mb-3">
+									<label for="edit_duration">Duration</label>
+									<input type="number" class="form-control" id="edit_duration" value="" />
+									<div class="invalid-feedback">Invalid duration</div>
+									<small>Optional</small>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col mb-3">
+									<label for="edit_notes">Notes</label>
+									<input type="text" class="form-control" id="edit_notes" value="" />
+									<small>Optional</small>
+								</div>
+							</div>
+							<div id="edit_form_unit" class="form-row">
+								<div class="col mb-3">
+									<label for="edit_unit">Unit Standard</label>
+									<input type="text" class="form-control" id="edit_unit" value="" />
+									<small>Optional</small>
 								</div>
 							</div>
 						</div>
@@ -110,7 +132,7 @@
 								<div class="col mb-3">
 									<label for="add_name">Template Name</label>
 									<input type="text" class="form-control" id="add_name" value="" />
-									<div id="add_error" class="invalid-feedback">This template already exists</div>
+									<div id="add_error" class="invalid-feedback">Invalid name</div>
 								</div>
 							</div>
 							<div id="add_form_duration" class="form-row">

@@ -338,4 +338,159 @@ app.post("/delete/qualification/template", urlencodedParser, async (req, res) =>
 	}
 });
 
+app.post("/edit/site/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var duration = req.body.duration;
+		var notes = req.body.notes;
+		var sql = "UPDATE site_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
+		await database.query(sql, [name, duration, notes, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/edit/product/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var duration = req.body.duration;
+		var notes = req.body.notes;
+		var sql = "UPDATE product_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
+		await database.query(sql, [name, duration, notes, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/edit/health/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var duration = req.body.duration;
+		var notes = req.body.notes;
+		var unit = req.body.unit;
+		var sql = "UPDATE health_templates SET name = $1, duration = $2, notes = $3, unit_standard = $4 WHERE id = $5";
+		await database.query(sql, [name, duration, notes, unit, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/edit/certification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var duration = req.body.duration;
+		var notes = req.body.notes;
+		var sql = "UPDATE certification_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
+		await database.query(sql, [name, duration, notes, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/edit/qualification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var notes = req.body.notes;
+		var sql = "UPDATE qualification_templates SET name = $1, notes = $2 WHERE id = $3";
+		await database.query(sql, [name, notes, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/site/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name, duration, notes FROM site_templates WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: result.rows[0].duration, notes: result.rows[0].notes, unit: "" });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/product/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name, duration, notes FROM product_templates WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: result.rows[0].duration, notes: result.rows[0].notes, unit: "" });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/health/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name, duration, notes, unit_standard FROM health_templates WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: result.rows[0].duration, notes: result.rows[0].notes, unit: result.rows[0].unit_standard });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/certification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name, duration, notes FROM certification_templates WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: result.rows[0].duration, notes: result.rows[0].notes, unit: "" });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/qualification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name, notes FROM qualification_templates WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: "", notes: result.rows[0].notes, unit: "" });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 module.exports = app;

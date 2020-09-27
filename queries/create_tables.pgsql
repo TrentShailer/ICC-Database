@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS employee_site_inductions (
 CREATE TABLE IF NOT EXISTS employee_product_certifications (
 	id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	user_id UUID REFERENCES users(user_id) NOT NULL,
-	template_id INT REFERENCES site_templates(id) NOT NULL,
+	template_id INT REFERENCES product_templates(id) NOT NULL,
 	training_date DATE,
 	expiration_date DATE
 );

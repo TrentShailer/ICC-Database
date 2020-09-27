@@ -89,7 +89,51 @@ function add() {
 	$("#add_modal").modal("show");
 }
 var selectedID;
-function edit(id) {}
+function edit(id) {
+	$("#view_modal").modal("hide");
+	selectedID = id;
+	$.post(`/get/${table}/template`, { id: selectedID }, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		$("#edit_title").text(`Edit ${type}: ${data.name}`);
+		$("#edit_name").val(data.name);
+		$("#edit_duration").val(data.duration);
+		$("#edit_notes").val(data.notes);
+		$("#edit_unit").val(data.unit);
+		$("#edit_modal").modal("show");
+	});
+}
+$("#editform").submit((e) => {
+	e.preventDefault();
+	var name = $("#edit_name").val();
+	$("#edit_duration").removeClass("is-invalid");
+	$("#edit_name").removeClass("is-invalid");
+	var duration = $("#edit_duration").val() == "" ? null : $("#edit_duration").val();
+	var notes = $("#edit_notes").val();
+	var unit = $("#edit_unit").val();
+	var error = false;
+	if ((duration != null && duration > 96) || (duration != null && duration < 1)) {
+		$("#edit_duration").addClass("is-invalid");
+		error = true;
+	}
+	if (name.length == 0 || name.length > 60) {
+		$("#edit_name").addClass("is-invalid");
+		error = true;
+	}
+	if (error) return;
+	$.post(
+		`/edit/${table}/template`,
+		{ id: selectedID, name: name, duration: table == "qualification" ? null : duration, notes: notes, unit: table == "health" ? null : unit },
+		(data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			$("#edit_modal").modal("hide");
+			$("#edit_name").val("");
+			$("#edit_duration").val("");
+			$("#edit_notes").val("");
+			$("#edit_unit").val("");
+			$("#success").modal("show");
+		}
+	);
+});
 
 function remove(id) {
 	$("#view_modal").modal("hide");
@@ -116,13 +160,20 @@ $("#addform").submit((e) => {
 	e.preventDefault();
 	var name = $("#add_name").val();
 	$("#add_duration").removeClass("is-invalid");
+	$("#add_nane").removeClass("is-invalid");
 	var duration = $("#add_duration").val() == "" ? null : $("#add_duration").val();
 	var notes = $("#add_notes").val();
 	var unit = $("#add_unit").val();
+	var error = false;
 	if ((duration != null && duration > 96) || (duration != null && duration < 1)) {
 		$("#add_duration").addClass("is-invalid");
-		return;
+		error = true;
 	}
+	if (name.length == 0 || name.length > 60) {
+		$("#add_name").addClass("is-invalid");
+		error = true;
+	}
+	if (error) return;
 	$.post(`/add/${table}/template`, { name: name, duration: table == "qualification" ? null : duration, notes: notes, unit: table == "health" ? null : unit }, (data) => {
 		if (data.redirect) window.location.href = data.redirect;
 		$("#add_modal").modal("hide");
