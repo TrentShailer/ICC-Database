@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ASGL ICC Administration</title>
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+	<body>
+		<% if(error) {%>
+		<div class="modal fade" id="error" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-danger" id="ModalLabel">Error</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p><%= error %></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Understood</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%}%>
+		<div class="modal fade" id="view_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="view_modal_title"></h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<button class="btn btn-success" type="button" onclick="add()">Add New Template</button>
+							<form class="form-inline my-2 my-lg-0 ml-auto float-right">
+								<input class="form-control mr-sm-2" type="search" placeholder="Search" id="search" onkeyup="filter()" />
+							</form>
+						</div>
+						<div class="mt-3">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>Template Name</th>
+										<th>Edit</th>
+										<th>Delete</th>
+									</tr>
+								</thead>
+								<tbody id="catagory_body"></tbody>
+							</table>
+						</div>
+						<div class="container d-flex justify-content-center pt-2">
+							<div class="text-primary spinner-border" id="loading"></div>
+						</div>
+						<div class="container d-flex justify-content-center pt-2">
+							<div class="alert alert-danger" id="nodata" style="width: 400px; display: none">No data</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="edit_title"></h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="editform">
+						<div class="modal-body">
+							<div class="form-row">
+								<div class="col mb-3">
+									<label for="name">Catagory Name</label>
+									<input type="text" class="form-control" id="edit_name" value="" />
+									<div id="edit_error" class="invalid-feedback">This catagory already exists</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Confirm" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="add_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="add_title">Add New</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="addform">
+						<div class="modal-body">
+							<div class="form-row">
+								<div class="col mb-3">
+									<label for="add_name">Template Name</label>
+									<input type="text" class="form-control" id="add_name" value="" />
+									<div id="add_error" class="invalid-feedback">This template already exists</div>
+								</div>
+							</div>
+							<div id="add_form_duration" class="form-row">
+								<div class="col mb-3">
+									<label for="add_duration">Duration</label>
+									<input type="number" class="form-control" id="add_duration" value="" />
+									<div class="invalid-feedback">Invalid duration</div>
+									<small>Optional</small>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="col mb-3">
+									<label for="add_notes">Notes</label>
+									<input type="text" class="form-control" id="add_notes" value="" />
+									<small>Optional</small>
+								</div>
+							</div>
+							<div id="add_form_unit" class="form-row">
+								<div class="col mb-3">
+									<label for="add_unit">Unit Standard</label>
+									<input type="text" class="form-control" id="add_unit" value="" />
+									<small>Optional</small>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Add" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="confirm_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="confirm_title"></h5>
+						<button type="button" class="close" data-dismiss="modal" onclick="clearForm()">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div>
+							<p id="disclaimer" class="text-danger"></p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+						<button onclick="confirm()" style="width: 10rem" type="button" class="btn btn-danger" data-dismiss="modal">Confirm</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="add_employee" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add New Employee</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="add_employee_form">
+						<div class="modal-body">
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="first_name">First Name</label>
+									<input type="text" class="form-control" id="first_name" />
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label for="last_name">Last Name</label>
+									<input type="text" class="form-control" id="last_name" />
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col">
+									<label for="email">ASGL Email</label>
+									<input type="email" class="form-control" id="email" />
+									<div class="invalid-feedback" id="email_error">This field is required</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" id="admin" />
+										<label class="form-check-label" for="admin">Admin Access</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col">
+									<label for="region">Region</label>
+									<select class="form-control" id="region">
+										<option selected>Select Region</option>
+									</select>
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col">
+									<label for="notes">Notes</label>
+									<input type="text" class="form-control" id="notes" />
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-outline-secondary" data-dismiss="modal" onclick="clearForm()">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-outline-success" value="Add" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="success" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header text-success">
+						<h5 class="modal-title">Success</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<h6>Action carried out successfully</h6>
+					</div>
+					<div class="modal-footer">
+						<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="report_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Generate report</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="generate_report_form">
+						<div class="modal-body">
+							<small>This will generate a report then email it to you</small>
+							<div class="form-row">
+								<div class="form-group col">
+									<label for="report_region">Region</label>
+									<select class="form-control" id="report_region">
+										<option selected>Select Region</option>
+									</select>
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Generate report" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="fixed-top">
+			<nav class="navbar navbar-dark bg-dark">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<button class="btn btn-outline-secondary btn-lg pl-5 pr-5" onclick="back()">
+							<span>
+								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+									<path
+										fill-rule="evenodd"
+										d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"
+									/>
+								</svg>
+							</span>
+							Back
+						</button>
+					</li>
+				</ul>
+			</nav>
+
+			<div class="container d-flex justify-content-center pt-3">
+				<h2>Administration</h2>
+			</div>
+			<div class="container pt-3 pb-4">
+				<div class="row">
+					<div class="col">
+						<button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="collapse" data-target="#options_view" style="width: 15rem">
+							Manage ICC Templates
+						</button>
+					</div>
+					<div class="col">
+						<button class="btn btn-outline-primary" style="width: 15rem" type="button" onclick="window.location.href=`/admin/employees`">Manage Employees</button>
+					</div>
+					<div class="col">
+						<button class="btn btn-outline-success" data-toggle="modal" data-target="#add_employee" style="width: 15rem" type="button">Add Employee</button>
+					</div>
+					<div class="col">
+						<button class="btn btn-outline-warning" style="width: 15rem" type="button" onclick="openreport()">Generate Report</button>
+					</div>
+				</div>
+				<div class="row pt-3">
+					<div class="col">
+						<div class="collapse" id="options_view">
+							<div class="card card-body" style="width: 15rem">
+								<h5 class="card-title" id="card_title">ICC Templates</h5>
+								<ul class="list-group">
+									<a class="list-group-item list-group-item-action" onclick="view(0)" href="#"> Site Inductions </a>
+									<a class="list-group-item list-group-item-action" onclick="view(1)" href="#">Product Certifications</a>
+									<a class="list-group-item list-group-item-action" onclick="view(2)" href="#">Health and Safety Qualifications</a>
+									<a class="list-group-item list-group-item-action" onclick="view(3)" href="#"> General Certifications </a>
+									<a class="list-group-item list-group-item-action" onclick="view(4)" href="#"> Qualifications </a>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+			integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+			integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+			crossorigin="anonymous"
+		></script>
+		<script src="scripts/admin.js"></script>
+	</body>
+</html>
