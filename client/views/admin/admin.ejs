@@ -80,7 +80,7 @@
 						<div class="modal-body">
 							<div class="form-row">
 								<div class="col mb-3">
-									<label for="edit_name">Template Name</label>
+									<label id="edit_label" for="edit_name">Template Name</label>
 									<input type="text" class="form-control" id="edit_name" value="" />
 									<div id="edit_error" class="invalid-feedback">Invalid name</div>
 								</div>
@@ -93,7 +93,7 @@
 									<small>Optional</small>
 								</div>
 							</div>
-							<div class="form-row">
+							<div class="form-row" id="edit_form_notes">
 								<div class="col mb-3">
 									<label for="edit_notes">Notes</label>
 									<input type="text" class="form-control" id="edit_notes" value="" />
@@ -130,7 +130,7 @@
 						<div class="modal-body">
 							<div class="form-row">
 								<div class="col mb-3">
-									<label for="add_name">Template Name</label>
+									<label id="add_label" for="add_name">Template Name</label>
 									<input type="text" class="form-control" id="add_name" value="" />
 									<div id="add_error" class="invalid-feedback">Invalid name</div>
 								</div>
@@ -143,7 +143,7 @@
 									<small>Optional</small>
 								</div>
 							</div>
-							<div class="form-row">
+							<div class="form-row" id="add_form_notes">
 								<div class="col mb-3">
 									<label for="add_notes">Notes</label>
 									<input type="text" class="form-control" id="add_notes" value="" />
@@ -353,6 +353,9 @@
 									<a class="list-group-item list-group-item-action" onclick="view(2)" href="#">Health and Safety Qualifications</a>
 									<a class="list-group-item list-group-item-action" onclick="view(3)" href="#"> General Certifications </a>
 									<a class="list-group-item list-group-item-action" onclick="view(4)" href="#"> Qualifications </a>
+								</ul>
+								<ul class="list-group mt-2">
+									<a class="list-group-item list-group-item-action" onclick="view(5)" href="#">Region </a>
 								</ul>
 							</div>
 						</div>

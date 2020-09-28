@@ -91,6 +91,16 @@ app.post("/get/qualification/templates", async (req, res) => {
 	}
 });
 
+app.post("/get/region/templates", async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT id, name FROM regions";
+		SendTemplates(sql, req, res);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 async function SendTemplates(sql, req, res) {
 	var result = await database.query(sql, [], false);
 	var templates = [];
@@ -100,7 +110,9 @@ async function SendTemplates(sql, req, res) {
 	result.rows.forEach((row) => {
 		var name = row.name;
 		var id = row.id;
-		templates.push({ name: name, id: id });
+		if (name != "admin") {
+			templates.push({ name: name, id: id });
+		}
 	});
 	res.send({ templates: templates });
 }
@@ -184,6 +196,22 @@ app.post("/add/qualification/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var sql = "INSERT INTO qualification_templates (name, notes) VALUES ($1, $2)";
 		var result = await database.query(sql, [name, notes], true);
+		if (result < 1) {
+			req.session.error = "Failed to insert data into database";
+			return res.send({ redirect: "/admin" });
+		}
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/add/region/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var name = req.body.name;
+		var sql = "INSERT INTO regions (name) VALUES ($1)";
+		var result = await database.query(sql, [name], true);
 		if (result < 1) {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
@@ -413,6 +441,19 @@ app.post("/edit/qualification/template", urlencodedParser, async (req, res) => {
 	}
 });
 
+app.post("/edit/region/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var name = req.body.name;
+		var sql = "UPDATE regions SET name = $1 WHERE id = $2";
+		await database.query(sql, [name, id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 app.post("/get/site/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
@@ -487,6 +528,22 @@ app.post("/get/qualification/template", urlencodedParser, async (req, res) => {
 			res.send({ redirect: "/admin" });
 		}
 		res.send({ name: result.rows[0].name, duration: "", notes: result.rows[0].notes, unit: "" });
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/get/region/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "SELECT name FROM regions WHERE id = $1";
+		var result = await database.query(sql, [id], false);
+		if (result < 0) {
+			req.session.error = "Failed to get data from server";
+			res.send({ redirect: "/admin" });
+		}
+		res.send({ name: result.rows[0].name, duration: "", notes: "", unit: "" });
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });

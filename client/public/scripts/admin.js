@@ -42,6 +42,10 @@ function view(id) {
 			type = "Qualification";
 			table = "qualification";
 			break;
+		case 5:
+			type = "Region";
+			table = "region";
+			break;
 	}
 	$.post(`/get/${table}/templates`, (data) => {
 		$("#loading").hide();
@@ -81,11 +85,28 @@ function add() {
 	$("#view_modal").modal("hide");
 	$("#loading").show();
 	$("#nodata").hide();
-	$("#add_title").text(`Add new ${type} template`);
+	if (table != "region") {
+		$("#add_title").text(`Add new ${type.toLowerCase()} template`);
+		$("#add_label").text(`${type} template name`);
+	} else {
+		$("#add_title").text(`Add new ${type.toLowerCase()}`);
+		$("#add_label").text(`Region name`);
+	}
+
 	if (table == "qualification") $("#add_form_duration").hide();
 	else $("#add_form_duration").show();
+
 	if (table == "health") $("#add_form_unit").show();
 	else $("#add_form_unit").hide();
+
+	if (table == "region") {
+		$("#add_form_duration").hide();
+		$("#add_form_unit").hide();
+		$("#add_form_notes").hide();
+	} else {
+		$("#add_form_notes").show();
+	}
+
 	$("#add_modal").modal("show");
 }
 var selectedID;
@@ -99,6 +120,27 @@ function edit(id) {
 		$("#edit_duration").val(data.duration);
 		$("#edit_notes").val(data.notes);
 		$("#edit_unit").val(data.unit);
+
+		if (table != "region") {
+			$("#edit_label").text(`${type} template name`);
+		} else {
+			$("#edit_label").text(`Region name`);
+		}
+
+		if (table == "qualification") $("#edit_form_duration").hide();
+		else $("#edit_form_duration").show();
+
+		if (table == "health") $("#edit_form_unit").show();
+		else $("#edit_form_unit").hide();
+
+		if (table == "region") {
+			$("#edit_form_duration").hide();
+			$("#edit_form_unit").hide();
+			$("#edit_form_notes").hide();
+		} else {
+			$("#edit_form_notes").show();
+		}
+
 		$("#edit_modal").modal("show");
 	});
 }
@@ -174,7 +216,7 @@ $("#addform").submit((e) => {
 		error = true;
 	}
 	if (error) return;
-	$.post(`/add/${table}/template`, { name: name, duration: table == "qualification" ? null : duration, notes: notes, unit: table == "health" ? null : unit }, (data) => {
+	$.post(`/add/${table}/template`, { name: name, duration: duration, notes: notes, unit: unit }, (data) => {
 		if (data.redirect) window.location.href = data.redirect;
 		$("#add_modal").modal("hide");
 		$("#add_name").val("");
