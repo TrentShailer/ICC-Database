@@ -1,12 +1,12 @@
 class user {
-	constructor(user_id, first_name, last_name, email, region_id, admin_access, notes) {
-		this.user_id = user_id;
-		this.first_name = first_name;
-		this.last_name = last_name;
-		this.email = email;
-		this.admin_access = admin_access;
-		this.region_id = region_id;
-		this.notes = notes;
+	constructor(object) {
+		this.user_id = object.user_id;
+		this.first_name = object.first_name;
+		this.last_name = object.last_name;
+		this.email = object.email;
+		this.admin_access = object.admin_access;
+		this.region_id = object.region_id;
+		this.notes = object.notes;
 	}
 }
 

@@ -318,3 +318,21 @@ $("#add_employee_form").submit((e) => {
 		}
 	});
 });
+
+function filter() {
+	var filter = $("#search").val().toLowerCase();
+	var row = $("#catagory_body").children();
+	for (var i = 0; i < row.length; i++) {
+		var show = false;
+		var cols = row.eq(i).children();
+		var col = cols.eq(0);
+		if (col.text().toLowerCase().includes(filter)) {
+			show = true;
+		}
+		if (show) {
+			row.eq(i).show();
+		} else {
+			row.eq(i).hide();
+		}
+	}
+}

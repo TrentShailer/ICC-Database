@@ -35,7 +35,15 @@ app.post("/login", urlencodedParser, async (req, res) => {
 					return res.end("/login");
 				} else {
 					var row = user.rows[0];
-					req.session.user = new classes.user(row.user_id, row.first_name, row.last_name, row.email, row.region_id, row.admin_access, row.notes);
+					req.session.user = new classes.user({
+						user_id: row.user_id,
+						first_name: row.first_name,
+						last_name: row.last_name,
+						email: row.email,
+						region_id: row.region_id,
+						admin_access: row.admin_access,
+						notes: row.notes,
+					});
 					return res.end("/profile");
 				}
 			} else {

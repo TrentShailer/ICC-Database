@@ -37,7 +37,7 @@ app.use(
 //* Routing
 //* -------------------
 
-app.get("/favicon.ico", (req, res) => res.send(204));
+app.get("/favicon.ico", (req, res) => res.sendStatus(204));
 
 app.use("/", function (req, res, next) {
 	req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
@@ -70,9 +70,14 @@ app.get("/404", async (req, res) => {
 	res.render("404", { page: req.session.page });
 });
 
-app.use(function (req, res, next) {
+app.get("*", function (req, res) {
 	req.session.page = req.url;
 	res.status(200).redirect("/404");
+});
+
+app.post("*", function (req, res) {
+	req.session.page = req.url;
+	res.status(200).send({ redirect: "/404" });
 });
 
 //* -------------------
