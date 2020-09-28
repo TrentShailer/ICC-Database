@@ -54,13 +54,32 @@ app.post("/recover", urlencodedParser, async (req, res) => {
 		var password = security.GeneratePassword();
 		var encryped_password = password.encryped_password;
 		password = password.password;
-
-		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], true);
+		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], false);
 		mailer.SendMail(req.body.email, "ASGL ICC Database Password Reset", `<h3>New Password: ${password}</h3>`);
 		res.send(200);
 	} else {
+		req.session.error = "You do not have permission to view this page";
 		res.send({ error: "/profile" });
 		return;
+	}
+});
+
+app.post("/delete/employee", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT user_id FROM users WHERE email = $1";
+		var id_query = await database.query(sql, req.body.email.toLowerCase());
+		if (id_query < 0) {
+			req.session.error = "Could not find user";
+			return res.send({ redirect: "/admin/employees" });
+		}
+		var user_id = id_query.rows[0].user_id;
+		sql =
+			"DELETE FROM users, employee_information, employee_site_inductions, employee_product_certifications, employee_health_qualifications, employee_certifications, employee_qualifications WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+		res.send(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
 	}
 });
 

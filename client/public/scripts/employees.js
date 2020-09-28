@@ -78,3 +78,28 @@ function recoverpassword(email) {
 		$("#success").modal("show");
 	});
 }
+
+var emailToDelete = "";
+function deleteEmployee(email) {
+	emailToDelete = email;
+	$("#confirm").modal("show");
+}
+
+function confirm() {
+	$("#confirm").modal("hide");
+	$.post("/delete/employee", { email: emailToDelete }, (data) => {
+		if (data.error) {
+			window.location.href = data.error;
+		}
+		$("#success").modal("show");
+		GetDataFromServer();
+	});
+}
+function clearForm() {
+	$("#first_name").val("");
+	$("#last_name").val("");
+	$("#email").val("");
+	$("#admin").prop("checked", false);
+	$("#edit_region").val("Select Region");
+	$("#notes").val("");
+}
