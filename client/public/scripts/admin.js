@@ -182,11 +182,24 @@ function remove(id) {
 	selectedID = id;
 	$.post(`/get/${table}/templates/references`, { id: selectedID }, (data) => {
 		if (data.redirect) window.location.href = data.redirect;
-		$("#confirm_title").text(`Confirm deleteion of ${data.name} template`);
-		$("#disclaimer").html(
-			`<strong>WARNING</strong><br>There are <strong>${data.number}</strong> employees with this ICC, deleting this template will remove it from them.<br>This can not be undone`
-		);
-		$("#confirm_modal").modal("show");
+		if (table != "region") {
+			$("#confirm_title").text(`Confirm deleteion of ${data.name} template`);
+			if (data.number > 0) {
+				$("#disclaimer").html(
+					`<strong>WARNING</strong><br>There are <strong>${data.number}</strong> employees with this ICC, deleting this template will remove it from them.<br>This can not be undone`
+				);
+			} else {
+				$("#disclaimer").html(`<strong>WARNING</strong><br>This can not be undone`);
+			}
+
+			$("#confirm_modal").modal("show");
+		} else {
+			$("#confirm_title").text(`Confirm deleteion of ${data.name} region`);
+
+			$("#disclaimer").html(`<strong>WARNING</strong><br>This can not be undone`);
+
+			$("#confirm_modal").modal("show");
+		}
 	});
 }
 
@@ -224,5 +237,135 @@ $("#addform").submit((e) => {
 		$("#add_notes").val("");
 		$("#add_unit").val("");
 		$("#success").modal("show");
+	});
+});
+
+function clearForm() {
+	$("#first_name").val("");
+	$("#last_name").val("");
+	$("#email").val("");
+	$("#admin").prop("checked", false);
+	$("#region").val("Select Region");
+	$("#notes").val("");
+}
+
+$("#add_employee_form").submit((e) => {
+	e.preventDefault();
+	var error = false;
+	$("#email_error").text("This field is required");
+	$("#start_date_error").text("This field is required");
+	$("#birthday_error").text("This field is required");
+	$("#industry_experience_error").text("This field is required");
+	$("#first_name").removeClass("is-invalid");
+	$("#last_name").removeClass("is-invalid");
+	$("#email").removeClass("is-invalid");
+	$("#admin").removeClass("is-invalid");
+	$("#region").removeClass("is-invalid");
+	$("#start_date").removeClass("is-invalid");
+	$("#job_title").removeClass("is-invalid");
+	$("#phonenumber").removeClass("is-invalid");
+	$("#vehicle").removeClass("is-invalid");
+	$("#licenceplate").removeClass("is-invalid");
+	$("#birthday").removeClass("is-invalid");
+	$("#industry_experience").removeClass("is-invalid");
+	if ($("#region").val() == "Select Region") {
+		$("#region").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#first_name").val() == "") {
+		$("#first_name").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#last_name").val() == "") {
+		$("#last_name").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#email").val() == "") {
+		$("#email").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#start_date").val() == "") {
+		$("#start_date").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#job_title").val() == "") {
+		$("#job_title").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#birthday").val() == "") {
+		$("#birthday").addClass("is-invalid");
+		error = true;
+	}
+	var today = new Date();
+	var startDate = new Date($("#start_date").val());
+	if (startDate > today || startDate == "Invalid Date") {
+		$("#start_date").addClass("is-invalid");
+		$("#start_date_error").text("Invalid date");
+		error = true;
+	}
+	var birthday = new Date($("#birthday").val());
+	if (birthday > today || birthday == "Invalid Date") {
+		$("#birthday").addClass("is-invalid");
+		$("#birthday_error").text("Invalid date");
+		error = true;
+	}
+
+	if (Number($("#industry_experience").val()) > 100 || Number($("#industry_experience").val()) < 0) {
+		$("#industry_experience").addClass("is-invalid");
+		$("#industry_experience_error").text("Number is too large to too small");
+		error = true;
+	}
+	if (error) {
+		return;
+	}
+	$.post("/emailexists", { email: $("#email").val() }, (data) => {
+		if (data.isvalid != true) {
+			$("#email_error").text("A user already exists with this email");
+			$("#email").addClass("is-invalid");
+			error = true;
+		}
+		if (error) {
+			return;
+		} else {
+			var first_name = $("#first_name").val();
+			var last_name = $("#last_name").val();
+			var email = $("#email").val();
+			var access_level = $("#admin").is(":checked") ? true : false;
+			var region = $("#region").val();
+			var start_date = $("#start_date").val();
+			var job_title = $("#job_title").val();
+			var phone_number = $("#phonenumber").val();
+			var vehicle = $("#vehicle").val();
+			var licenceplate = $("#licenceplate").val();
+			var birthday = $("#birthday").val();
+			var industry_experience = $("#industry_experience").val();
+			$.post(
+				"/adduser",
+				{
+					first_name: first_name,
+					last_name: last_name,
+					email: email,
+					access_level: access_level,
+					region: region,
+					start_date: start_date,
+					job_title: job_title,
+					phone_number: phone_number,
+					vehicle: vehicle,
+					licenceplate: licenceplate,
+					birthday: birthday,
+					industry_experience: industry_experience,
+				},
+				(data) => {
+					if (data.redirect) {
+						clearForm();
+						window.location.href = data.redirect;
+					} else {
+						$("#add_employee").modal("hide");
+						$("#success").modal("show");
+						clearForm();
+					}
+				}
+			);
+		}
 	});
 });

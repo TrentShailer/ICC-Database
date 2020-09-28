@@ -283,6 +283,26 @@ app.post("/get/qualification/templates/references", urlencodedParser, async (req
 	}
 });
 
+app.post("/get/region/templates/references", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql1 = "SELECT user_id FROM users WHERE region_id = $1";
+		var sql2 = "SELECT name FROM regions WHERE id = $1";
+		var result = await database.query(sql1, [id], false);
+		var name_query = await database.query(sql2, [id], false);
+		var name = name_query.rows[0].name;
+		if (result == -1) {
+			return res.send({ name: name });
+		} else {
+			req.session.error = "You may not delete a region with employees still assigned to it";
+			return res.send({ redirect: "/admin" });
+		}
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 async function HandleReferences(sql1, sql2, id, req, res) {
 	var result = await database.query(sql1, [id], false);
 	var name_query = await database.query(sql2, [id], false);
@@ -358,6 +378,17 @@ app.post("/delete/qualification/template", urlencodedParser, async (req, res) =>
 		var sql = "DELETE FROM employee_qualifications WHERE template_id = $1";
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM qualification_templates WHERE id = $1";
+		await database.query(sql, [id], false);
+		res.send(200);
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+app.post("/delete/region/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var id = req.body.id;
+		var sql = "DELETE FROM regions WHERE id = $1";
 		await database.query(sql, [id], false);
 		res.send(200);
 	} else {
