@@ -581,4 +581,56 @@ app.post("/get/region/template", urlencodedParser, async (req, res) => {
 	}
 });
 
+app.post("/emailexists", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		if (utility.ValidEmail(req.body.email)) {
+			var row = await database.query("SELECT user_id FROM users WHERE email = $1", [req.body.email], false);
+			if (row == -1) {
+				res.send({ isvalid: true });
+				return;
+			} else {
+				res.send({ isvalid: false });
+				return;
+			}
+		} else {
+			res.send({ isvalid: false });
+			return;
+		}
+	} else {
+		req.session.error = "You dont have permission to view this";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/adduser", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var first_name = req.body.first_name;
+		var last_name = req.body.last_name;
+		var email = req.body.email.toLowerCase();
+		var admin_access = req.body.admin_access == "true" ? true : false;
+		var region = req.body.region;
+		var notes = req.body.notes;
+		var user_id = security.GetUUID();
+		var password = security.GeneratePassword();
+		var encryptedPassword = password.encryped_password;
+		password = password.password;
+		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
+		if (region_id < 0) {
+			req.session.error = "Error adding data to database";
+			return res.send({ redirect: "/admin" });
+		}
+		var sql = "INSERT INTO users (user_id, first_name, last_name, email, password, region_id, admin_access, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
+		var user = await database.query(sql, [user_id, first_name, last_name, email, encryptedPassword, region_id.rows[0].id, admin_access, notes], true);
+		if (user == -1) {
+			req.session.error = "Error adding data to database";
+			return res.send({ redirect: "/admin" });
+		}
+		mailer.SendMail(email, "ASGL ICC Database login", `<h3>Email: ${email}</h3><br><h3>Password: ${password}</h3>`);
+		res.send(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 module.exports = app;

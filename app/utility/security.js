@@ -12,7 +12,7 @@ function Encrypt(string) {
 	}).toString();
 }
 
-function GeneratePassword(encrypt) {
+function GeneratePassword() {
 	var regex = "^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).*$";
 
 	var password = MakePassword();
@@ -22,8 +22,7 @@ function GeneratePassword(encrypt) {
 		password = MakePassword();
 	}
 
-	if (encrypt) password = Encrypt(password);
-	return password;
+	return { password: password, encryped_password: Encrypt(password) };
 }
 
 function MakePassword() {
