@@ -24,7 +24,7 @@ app.post("/get/employees", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var employees = [];
 		var region = req.body.region;
-		var region_id = await database.query("Select id FROM regions WHERE name = $1", [region], false);
+		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
 		if (region_id == -1 || region_id == -2) {
 			req.session.error = "Failed to get region id";
 			return res.send({ redirect: "/admin" });
@@ -83,4 +83,50 @@ app.post("/delete/employee", urlencodedParser, async (req, res) => {
 	}
 });
 
+app.post("/set/employee_to_view", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT user_id, first_name, last_name FROM users WHERE email = $1";
+		var result = await database.query(sql, [req.body.email], false);
+		if (result < 0) {
+			req.session.error = "Could not find employee";
+			return res.send({ redirect: "/admin/employees" });
+		}
+		req.session.employee_to_view = new classes.user({
+			user_id: result.rows[0].user_id,
+			first_name: result.rows[0].first_name,
+			last_name: result.rows[0].last_name,
+		});
+		res.send(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+// TODO employee editing
+app.post("/get/employee", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var email = req.body.email;
+		var sql = "SELECT first_name, last_name, email, admin_access, notes, regions.name AS region FROM users INNER JOIN regions ON region_id = id WHERE email = $1";
+		var result = await database.query(sql, [email], false);
+		if (result < 0) {
+			req.session.error = "Could not find employee";
+			return res.send({ redirect: "/admin/employees" });
+		}
+		var employee = result.rows[0];
+		res.send({
+			user: new classes.user({
+				first_name: employee.first_name,
+				last_name: employee.last_name,
+				email: employee.email,
+				admin_access: employee.admin_access,
+				notes: employee.notes,
+				region: employee.region,
+			}),
+		});
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
 module.exports = app;

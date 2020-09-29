@@ -43,12 +43,44 @@ function GetDataFromServer() {
 				$("#nodata").show();
 				return;
 			}
+
 			for (var i = 0; i < employees.length; i++) {
 				var employee = employees[i];
-				var html = `<tr><td>${employee.first_name} ${employee.last_name}</td><td>${employee.email}</td><td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View Inductions</button></td><td><button class="btn btn-outline-secondary" onclick="recoverpassword('${employee.email}')">Recover Password</button></td><td><button class="btn btn-outline-info" onclick="edit('${employee.email}')">Edit Employee</button></td><td><button class="btn btn-outline-danger" onclick="deleteEmployee('${employee.email}')">Delete Employee</button></td></tr>`;
+				var html = `
+				<tr>
+					<td>${employee.first_name} ${employee.last_name}</td>
+					<td>${employee.email}</td><td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View Inductions</button></td>
+					<td><button class="btn btn-outline-secondary" onclick="recoverpassword('${employee.email}')">Recover Password</button></td>
+					<td><button class="btn btn-outline-info" onclick="edit('${employee.email}')">Edit Employee</button></td>
+					<td><button class="btn btn-outline-danger" onclick="deleteEmployee('${employee.email}')">Delete Employee</button></td>
+				</tr>`;
 				$("#table_body").append(html);
 			}
 		}
+	});
+}
+
+function edit(email) {
+	$("#edit_region").empty();
+	$("#edit_region").append("<option selected>Select Region</option>");
+	$.post("/get/regions", (data) => {
+		var names = data.names;
+		for (var i = 0; i < names.length; i++) {
+			var html = `<option>${names[i]}</option>`;
+			$("#edit_region").append(html);
+		}
+		$("#edit_employee").modal("show");
+		$.post("/get/employee", { email: email }, (data) => {
+			if (data.error) {
+				window.location.href = data.error;
+			}
+			$("#first_name").val(data.user.first_name);
+			$("#last_name").val(data.user.last_name);
+			$("#email").val(data.user.email);
+			$("#admin").prop("checked", data.user.admin_access);
+			$("#edit_region").val(data.user.region);
+			$("#notes").val(data.user.notes);
+		});
 	});
 }
 
@@ -102,4 +134,13 @@ function clearForm() {
 	$("#admin").prop("checked", false);
 	$("#edit_region").val("Select Region");
 	$("#notes").val("");
+}
+
+function view(email) {
+	$.post("/set/employee_to_view", { email: email }, (data) => {
+		if (data.error) {
+			window.location.href = data.error;
+		}
+		window.location.href = `/admin/employees/view`;
+	});
 }

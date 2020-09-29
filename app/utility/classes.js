@@ -6,6 +6,7 @@ class user {
 		this.email = object.email;
 		this.admin_access = object.admin_access;
 		this.region_id = object.region_id;
+		this.region = object.region;
 		this.notes = object.notes;
 	}
 }
