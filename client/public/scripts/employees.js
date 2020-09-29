@@ -59,8 +59,9 @@ function GetDataFromServer() {
 		}
 	});
 }
-
+var prevEmail = "";
 function edit(email) {
+	prevEmail = email;
 	$("#edit_region").empty();
 	$("#edit_region").append("<option selected>Select Region</option>");
 	$.post("/get/regions", (data) => {
@@ -84,6 +85,79 @@ function edit(email) {
 	});
 }
 
+$("#edit_form").submit((e) => {
+	e.preventDefault();
+
+	var error = false;
+	$("#email_error").text("This field is required");
+	$("#first_name").removeClass("is-invalid");
+	$("#last_name").removeClass("is-invalid");
+	$("#email").removeClass("is-invalid");
+	$("#admin").removeClass("is-invalid");
+	$("#edit_region").removeClass("is-invalid");
+	if ($("#edit_region").val() == "Select Region") {
+		$("#edit_region").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#first_name").val() == "") {
+		$("#first_name").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#last_name").val() == "") {
+		$("#last_name").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#email").val() == "") {
+		$("#email").addClass("is-invalid");
+		error = true;
+	}
+
+	if (error) {
+		return;
+	}
+	$.post("/emailexists", { email: $("#email").val() }, (data) => {
+		var email = $("#email").val();
+
+		if (data.redirect) window.location.href = data.redirect;
+		if (email.toLowerCase() != prevEmail.toLowerCase()) {
+			if (data.isvalid != true) {
+				$("#email_error").text("A user already exists with this email");
+				$("#email").addClass("is-invalid");
+				error = true;
+			}
+			if (error) {
+				return;
+			}
+		}
+		var first_name = $("#first_name").val();
+		var last_name = $("#last_name").val();
+		var admin_access = $("#admin").is(":checked") ? true : false;
+		var region = $("#edit_region").val();
+		var notes = $("#notes").val();
+		$.post(
+			"/edit/employee",
+			{
+				first_name: first_name,
+				last_name: last_name,
+				email: email,
+				admin_access: admin_access,
+				region: region,
+				notes: notes,
+				prevEmail: prevEmail,
+			},
+			(data) => {
+				if (data.redirect) {
+					window.location.href = data.redirect;
+				} else {
+					$("#edit_employee").modal("hide");
+					$("#success").modal("show");
+					GetDataFromServer();
+					clearForm();
+				}
+			}
+		);
+	});
+});
 function filter() {
 	var filter = $("#search").val().toLowerCase();
 	var row = $("#table_body").children();

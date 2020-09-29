@@ -103,7 +103,6 @@ app.post("/set/employee_to_view", urlencodedParser, async (req, res) => {
 	}
 });
 
-// TODO employee editing
 app.post("/get/employee", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var email = req.body.email;
@@ -129,4 +128,34 @@ app.post("/get/employee", urlencodedParser, async (req, res) => {
 		return res.send({ redirect: "/profile" });
 	}
 });
+
+app.post("/edit/employee", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var first_name = req.body.first_name;
+		var last_name = req.body.last_name;
+		var email = req.body.email;
+		var emailToEdit = req.body.prevEmail;
+		var admin_access = req.body.admin_access;
+		var region = req.body.region;
+		var notes = req.body.notes;
+
+		var region_query = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
+		if (region_query < 0) {
+			req.session.error = "Could not find region";
+			return res.send({ redirect: "/admin/employees" });
+		}
+
+		var sql = "UPDATE users SET first_name = $1, last_name = $2, email = $3, admin_access = $4, region_id = $5, notes = $6 WHERE email = $7";
+		var result = await database.query(sql, [first_name, last_name, email, admin_access, region_query.rows[0].id, notes, emailToEdit], false);
+		if (result < 0) {
+			req.session.error = "Could not update employee";
+			return res.send({ redirect: "/admin/employees" });
+		}
+		res.send(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
 module.exports = app;
