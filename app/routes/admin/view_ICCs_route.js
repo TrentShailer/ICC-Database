@@ -43,7 +43,7 @@ app.post("/get/employee/site/iccs", async (req, res) => {
 				var expired = "No";
 
 				if (row.expiration_date) {
-					if (new Date(expiration_date) < today) {
+					if (new Date(row.expiration_date) < today) {
 						expired = "Yes";
 					}
 				}
@@ -83,7 +83,7 @@ app.post("/get/employee/product/iccs", async (req, res) => {
 				var expired = "No";
 
 				if (row.expiration_date) {
-					if (new Date(expiration_date) < today) {
+					if (new Date(row.expiration_date) < today) {
 						expired = "Yes";
 					}
 				}
@@ -123,7 +123,7 @@ app.post("/get/employee/health/iccs", async (req, res) => {
 				var expired = "No";
 
 				if (row.expiration_date) {
-					if (new Date(expiration_date) < today) {
+					if (new Date(row.expiration_date) < today) {
 						expired = "Yes";
 					}
 				}
@@ -165,7 +165,7 @@ app.post("/get/employee/certification/iccs", async (req, res) => {
 				var expired = "No";
 
 				if (row.expiration_date) {
-					if (new Date(expiration_date) < today) {
+					if (new Date(row.expiration_date) < today) {
 						expired = "Yes";
 					}
 				}
@@ -271,4 +271,145 @@ app.post("/delete/employee/qualification/icc", urlencodedParser, async (req, res
 	}
 });
 
+app.post("/get/employee/site/data", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT training_date FROM employee_site_inductions WHERE id = $1";
+		getICCData(req, res, sql);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/get/employee/product/data", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT training_date FROM employee_product_certifications WHERE id = $1";
+		getICCData(req, res, sql);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/get/employee/health/data", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT training_date FROM employee_health_qualifications WHERE id = $1";
+		getICCData(req, res, sql);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/get/employee/certification/data", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT training_date FROM employee_certifications WHERE id = $1";
+		getICCData(req, res, sql);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+async function getICCData(req, res, sql) {
+	var query = await database.query(sql, [req.body.id], true);
+	if (query < 0) {
+		req.session.error = "Failed to fetch ICC from server";
+		return res.send({ redirect: "/admin/employees/view" });
+	}
+	res.send({ training_date: new Date(query.rows[0].training_date).toISOString().substr(0, 10) });
+}
+
+app.post("/edit/employee/site/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "UPDATE employee_site_inductions SET training_date = $1, template_id = $2, expiration_date = $3 WHERE id = $4";
+		var templateSQL = "SELECT duration FROM site_templates WHERE id = $1";
+		handleICCEdit(req, res, sql, templateSQL);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/edit/employee/product/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "UPDATE employee_product_certifications SET training_date = $1, template_id = $2, expiration_date = $3 WHERE id = $4";
+		var templateSQL = "SELECT duration FROM product_templates WHERE id = $1";
+		handleICCEdit(req, res, sql, templateSQL);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/edit/employee/health/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "UPDATE employee_health_qualifications SET training_date = $1, template_id = $2, expiration_date = $3 WHERE id = $4";
+		var templateSQL = "SELECT duration FROM health_templates WHERE id = $1";
+		handleICCEdit(req, res, sql, templateSQL);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/edit/employee/certification/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "UPDATE employee_certifications SET training_date = $1, template_id = $2, expiration_date = $3 WHERE id = $4";
+		var templateSQL = "SELECT duration FROM certification_templates WHERE id = $1";
+		handleICCEdit(req, res, sql, templateSQL);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/edit/employee/qualification/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "UPDATE employee_product_certifications SET template_id = $1 WHERE id = $2";
+
+		var id = req.body.id;
+		var icc = req.body.icc;
+		var query = await database.query(sql, [icc, id], true);
+		if (query < 0) {
+			req.session.error = "Failed to update ICC";
+			return res.send({ redirect: "/admin/employees/view" });
+		}
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+async function handleICCEdit(req, res, sql, templateSQL) {
+	var id = req.body.id;
+	var training_date = req.body.training_date;
+	var icc = req.body.icc;
+
+	var templatequery = await database.query(templateSQL, [icc], true);
+	if (templatequery < 0) {
+		req.session.error = "Failed to get template from database";
+		return res.send({ redirect: "/admin/employees" });
+	}
+	var duration = templatequery.rows[0].duration;
+
+	var expiration_date = getExpirationDate(duration, training_date);
+
+	var query = await database.query(sql, [training_date, icc, expiration_date, id], true);
+	if (query < 0) {
+		req.session.error = "Failed to update ICC";
+		return res.send({ redirect: "/admin/employees/view" });
+	}
+	res.sendStatus(200);
+}
+function getExpirationDate(duration, training_date) {
+	var expiration_date = null;
+	if (duration && training_date) {
+		expiration_date = new Date(training_date);
+		expiration_date = expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
+		expiration_date = new Date(expiration_date).toISOString().substr(0, 10);
+	}
+	return expiration_date;
+}
 module.exports = app;

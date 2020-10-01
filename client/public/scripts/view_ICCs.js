@@ -29,9 +29,74 @@ function confirm() {
 		});
 	}
 }
+$("#edit_form").submit((e) => {
+	e.preventDefault();
+	$("#edit_training_date").removeClass("is-invalid");
+	var today = new Date();
+	var training_date = $("#edit_training_date").val();
+	var error = false;
+	if ((training_date && new Date(training_date) == "Invalid Date") || (training_date && today < new Date(training_date))) {
+		error = true;
+		$("#edit_training_date").addClass("is-invalid");
+	}
+	if (error) return;
+	var newICCID = $("#edit_icc").find(":selected").attr("id");
+	$.post(`/edit/employee/${type}/icc`, { id: selectedID, icc: newICCID, training_date: training_date }, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		$("#edit_modal").modal("hide");
+		$("#success").modal("show");
+		view(type);
+	});
+});
 
 function edit(id) {
 	selectedID = id;
+	var display_name;
+	switch (type) {
+		case "site":
+			display_name = "Site Induction";
+			break;
+		case "product":
+			display_name = "Product Certification";
+			break;
+		case "health":
+			display_name = "Health and Safety Qualification";
+			break;
+		case "certification":
+			display_name = "General Certification";
+			break;
+		case "qualification":
+			display_name = "Qualification";
+			break;
+	}
+	$("#edit_title").text(`Edit ${display_name}`);
+	$("#edit_icc_title").text(`${display_name}`);
+	$("#edit_icc").empty();
+	if (type != "qualification") {
+		$.post(`/get/employee/${type}/data`, { id: id }, (data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			var training_date = data.training_date;
+			$("#training_group").show();
+			$("#edit_training_date").val(training_date);
+		});
+	} else {
+		$("#training_group").hide();
+		$("#edit_training_date").val("");
+	}
+	$.post(`/get/${type}/templates`, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		var templates = data.templates;
+		templates.forEach((template) => {
+			if (template.id == id) {
+				var html = `<option selected id=${template.id}>${template.name}</option>`;
+			} else {
+				var html = `<option id=${template.id}>${template.name}</option>`;
+			}
+
+			$("#edit_icc").append(html);
+		});
+		$("#edit_modal").modal("show");
+	});
 }
 
 function view(table) {

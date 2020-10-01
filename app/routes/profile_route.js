@@ -40,8 +40,6 @@ app.post("/get/qualifications/all", async (req, res) => {
 	}
 });
 
-// TODO Test all below sql with data
-
 app.post("/get/all/required", async (req, res) => {
 	if (req.session.user) {
 		var sites = [];

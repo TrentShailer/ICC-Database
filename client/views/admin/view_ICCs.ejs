@@ -45,246 +45,41 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal fade" id="edit_qualification_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+		<div class="modal fade" id="edit_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="add_title">Edit Qualification</h5>
+						<h5 class="modal-title" id="edit_title"></h5>
 						<button type="button" class="close" data-dismiss="modal">
 							<span>&times;</span>
 						</button>
 					</div>
-					<form id="edit_qualification_form">
+					<form id="edit_form">
 						<div class="modal-body">
 							<div>
-								<div class="form-group">
-									<label for="edit_qualification_name">Qualification</label>
-									<select id="edit_qualification_name" class="form-control" name="edit_qualification_name">
-										<option>Select a qualification</option>
-									</select>
-									<div class="invalid-feedback">You need to select a qualification</div>
+								<div class="form-row">
+									<div class="form-group col">
+										<label id="edit_icc_title" for="icc"></label>
+										<select class="form-control" id="edit_icc"></select>
+										<div class="invalid-feedback">This field is required</div>
+									</div>
+								</div>
+								<div class="form-row" id="training_group">
+									<div class="form-group col">
+										<label for="edit_training_date">Training Date</label>
+										<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_training_date" />
+										<div class="invalid-feedback">Invalid date</div>
+										<small>Format: yyyy-mm-dd</small>
+										<br />
+										<small>Leave blank to let employees know that they need to complete it</small>
+									</div>
 								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
 							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
-							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" id="edit_certification_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Edit Certification</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-					<form id="edit_certification_form">
-						<div class="modal-body">
-							<div>
-								<div class="form-group">
-									<label for="edit_certification_name">Certification</label>
-									<select id="edit_certification_name" class="form-control" name="edit_certification_name">
-										<option>Select a certification</option>
-									</select>
-									<div class="invalid-feedback">You need to select a certification</div>
-								</div>
-
-								<div class="form-group">
-									<label for="edit_certification_date">Certification Received Date</label>
-									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_certification_date" />
-									<div id="edit_certification_date_error" class="invalid-feedback">This field is required</div>
-									<small>Format: yyyy-mm-dd</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_certification_duration">Certification Duration</label>
-									<input type="number" class="form-control" id="edit_certification_duration" />
-									<div class="invalid-feedback">Invalid Duration</div>
-									<small>Optional (Number of months)</small>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" id="edit_health_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Edit Health and Safety Qualification</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-					<form id="edit_health_form">
-						<div class="modal-body">
-							<div>
-								<div class="form-group">
-									<label for="edit_health_type">Health and Safety Qualification type</label>
-									<select id="edit_health_type" class="form-control" name="edit_health_type">
-										<option>Select a qualification type</option>
-									</select>
-									<div class="invalid-feedback">You need to select a qualification type</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_name">Health and Safety Qualification name</label>
-									<select id="edit_health_name" class="form-control" name="edit_health_name">
-										<option>Select a qualification name</option>
-									</select>
-									<div class="invalid-feedback">You need to select a qualification name</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_date">Training Date</label>
-									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_health_date" />
-									<div id="edit_health_date_error" class="invalid-feedback">This field is required</div>
-									<small>Format: yyyy-mm-dd</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_duration">Qualification Duration</label>
-									<input type="number" class="form-control" id="edit_health_duration" />
-									<div class="invalid-feedback">Invalid Duration</div>
-									<small>Optional (Number of months)</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_trainer">Training Provider</label>
-									<input type="text" class="form-control" id="edit_health_trainer" />
-									<small>Optional</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_unit">Unit Standard</label>
-									<input type="text" class="form-control" id="edit_health_unit" />
-									<small>Optional</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_health_notes">Notes</label>
-									<input type="text" class="form-control" id="edit_health_notes" />
-									<small>Optional</small>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" id="edit_product_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Edit Product Certification</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-					<form id="edit_product_form">
-						<div class="modal-body">
-							<div>
-								<div class="form-group">
-									<label for="edit_product_name">Product</label>
-									<select id="edit_product_name" class="form-control" name="edit_product_name">
-										<option>Select a product</option>
-									</select>
-									<div class="invalid-feedback">You need to select a product</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_product_course">Course</label>
-									<select id="edit_product_course" class="form-control" name="edit_product_course">
-										<option>Select a course</option>
-									</select>
-									<div class="invalid-feedback">You need to select an induction</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_product_date">Training Date</label>
-									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_product_date" />
-									<div id="edit_product_date_error" class="invalid-feedback">This field is required</div>
-									<small>Format: yyyy-mm-dd</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_product_duration">Certification Duration</label>
-									<input type="number" class="form-control" id="edit_product_duration" />
-									<div class="invalid-feedback">Invalid Duration</div>
-									<small>Optional (Number of months)</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_product_notes">Notes</label>
-									<input type="text" class="form-control" id="edit_product_notes" />
-									<small>Optional</small>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="modal fade" id="edit_site_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Edit Site Induction</h5>
-						<button type="button" class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-					<form id="edit_site_form">
-						<div class="modal-body">
-							<div>
-								<div class="form-group">
-									<label for="edit_site_name">Site</label>
-									<select id="edit_site_name" class="form-control" name="edit_site_name">
-										<option>Select a site</option>
-									</select>
-									<div class="invalid-feedback">You need to select a site</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_site_induction">Induction</label>
-									<select id="edit_site_induction" class="form-control" name="edit_site_induction">
-										<option>Select an induction</option>
-									</select>
-									<div class="invalid-feedback">You need to select an induction</div>
-								</div>
-								<div class="form-group">
-									<label for="edit_site_date">Induction Date</label>
-									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_site_date" />
-									<div id="edit_site_date_error" class="invalid-feedback">This field is required</div>
-									<small>Format: yyyy-mm-dd</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_site_duration">Induction Duration</label>
-									<input type="number" class="form-control" id="edit_site_duration" />
-									<div class="invalid-feedback">Invalid Duration</div>
-									<small>Optional (Number of months)</small>
-								</div>
-								<div class="form-group">
-									<label for="edit_site_notes">Notes</label>
-									<input type="text" class="form-control" id="edit_site_notes" />
-									<small>Optional</small>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Apply" />
 						</div>
 					</form>
 				</div>
