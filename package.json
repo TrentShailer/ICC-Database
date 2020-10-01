@@ -18,5 +18,8 @@
 		"nodemailer": "^6.4.11",
 		"pg": "^8.3.3",
 		"uuid": "^8.3.0"
+	},
+	"devDependencies": {
+		"eslint": "^7.10.0"
 	}
 }

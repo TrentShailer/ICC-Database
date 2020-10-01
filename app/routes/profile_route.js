@@ -50,7 +50,7 @@ app.post("/get/all/required", async (req, res) => {
 		var certifications = [];
 
 		var sql =
-			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND training_date = null";
+			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND training_date IS NULL";
 		var site_query = await database.query(sql, [req.session.user.user_id], false);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
@@ -59,7 +59,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND training_date = null";
+			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND training_date IS NULL";
 		var product_query = await database.query(sql, [req.session.user.user_id], false);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
@@ -68,7 +68,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND training_date = null";
+			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND training_date IS NULL";
 		var health_query = await database.query(sql, [req.session.user.user_id], false);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
@@ -77,7 +77,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND training_date = null";
+			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND training_date IS NULL";
 		var certification_query = await database.query(sql, [req.session.user.user_id], false);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {

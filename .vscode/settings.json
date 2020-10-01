@@ -10,5 +10,6 @@
 			"server": "localhost",
 			"username": "postgres"
 		}
-	]
+	],
+	"eslint.enable": false
 }

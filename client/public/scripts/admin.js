@@ -1,3 +1,4 @@
+/* eslint-disable */
 $("#error").modal();
 
 function back() {

@@ -158,4 +158,102 @@ app.post("/edit/employee", urlencodedParser, async (req, res) => {
 	}
 });
 
+app.post("/assign/site/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var templateSQL = "SELECT duration, id FROM site_templates WHERE name = $1";
+		var insertSQL = "INSERT INTO employee_site_inductions (user_id, template_id, training_date, expiration_date) VALUES ($1, $2, $3, $4)";
+		handleAssigns(req, res, templateSQL, insertSQL, true);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/assign/product/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var templateSQL = "SELECT duration, id FROM product_templates WHERE name = $1";
+		var insertSQL = "INSERT INTO employee_product_certifications (user_id, template_id, training_date, expiration_date) VALUES ($1, $2, $3, $4)";
+		handleAssigns(req, res, templateSQL, insertSQL, true);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/assign/health/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var templateSQL = "SELECT duration, id FROM health_templates WHERE name = $1";
+		var insertSQL = "INSERT INTO employee_health_qualifications (user_id, template_id, training_date, expiration_date) VALUES ($1, $2, $3, $4)";
+		handleAssigns(req, res, templateSQL, insertSQL, true);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/assign/certification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var templateSQL = "SELECT duration, id FROM certification_templates WHERE name = $1";
+		var insertSQL = "INSERT INTO employee_certifications (user_id, template_id, training_date, expiration_date) VALUES ($1, $2, $3, $4)";
+		handleAssigns(req, res, templateSQL, insertSQL, true);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+app.post("/assign/qualification/template", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var templateSQL = "SELECT id FROM qualification_templates WHERE name = $1";
+		var insertSQL = "INSERT INTO employee_qualifications (user_id, template_id) VALUES ($1, $2)";
+		handleAssigns(req, res, templateSQL, insertSQL, false);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		return res.send({ redirect: "/profile" });
+	}
+});
+
+function getExpirationDate(duration, training_date) {
+	var expiration_date = null;
+	if (duration && training_date) {
+		expiration_date = new Date(training_date);
+		expiration_date = expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
+		expiration_date = new Date(expiration_date).toISOString().substr(0, 10);
+	}
+	return expiration_date;
+}
+
+async function handleAssigns(req, res, templateSQL, insertSQL, hasDuration) {
+	var emails = req.body.emails;
+	var icc = req.body.icc;
+
+	var templatequery = await database.query(templateSQL, [icc], true);
+	if (templatequery < 0) {
+		req.session.error = "Failed to get template from database";
+		return res.send({ redirect: "/admin/employees" });
+	}
+	var template_id = templatequery.rows[0].id;
+	if (hasDuration) {
+		var duration = templatequery.rows[0].duration;
+		var training_date = req.body.training_date;
+
+		var expiration_date = getExpirationDate(duration, training_date);
+	}
+
+	emails.forEach(async (email) => {
+		var sql = "SELECT user_id FROM users WHERE email = $1";
+		var userquery = await database.query(sql, [email.toLowerCase()], true);
+		if (userquery < 0) {
+			return;
+		}
+		var user_id = userquery.rows[0].user_id;
+		var params = [user_id, template_id];
+		if (hasDuration) {
+			params.push(training_date == "" ? null : training_date, expiration_date == "" ? null : expiration_date);
+		}
+		await database.query(insertSQL, params, true);
+	});
+	res.send(200);
+}
+
 module.exports = app;

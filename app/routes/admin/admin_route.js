@@ -23,7 +23,7 @@ app.get("/admin", async (req, res) => {
 app.post("/get/regions", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var sql = "SELECT name FROM regions";
-		var result = await database.query(sql, [], true);
+		var result = await database.query(sql, [], false);
 
 		var names = [];
 		if (result != -1 && result != -2 && result != -3) {
@@ -43,7 +43,7 @@ app.post("/get/regions", async (req, res) => {
 
 app.post("/get/site/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM site_templates";
+		var sql = "SELECT id, name FROM site_templates ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -53,7 +53,7 @@ app.post("/get/site/templates", async (req, res) => {
 
 app.post("/get/product/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM product_templates";
+		var sql = "SELECT id, name FROM product_templates ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -63,7 +63,7 @@ app.post("/get/product/templates", async (req, res) => {
 
 app.post("/get/health/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM health_templates";
+		var sql = "SELECT id, name FROM health_templates ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -73,7 +73,7 @@ app.post("/get/health/templates", async (req, res) => {
 
 app.post("/get/certification/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM certification_templates";
+		var sql = "SELECT id, name FROM certification_templates ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -83,7 +83,7 @@ app.post("/get/certification/templates", async (req, res) => {
 
 app.post("/get/qualification/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM qualification_templates";
+		var sql = "SELECT id, name FROM qualification_templates ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";

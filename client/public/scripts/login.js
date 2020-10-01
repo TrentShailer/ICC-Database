@@ -1,3 +1,4 @@
+/* eslint-disable */
 $("#error").modal();
 $("#loginForm").submit((e) => {
 	e.preventDefault();

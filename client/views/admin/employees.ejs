@@ -139,6 +139,74 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="icc_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Add ICC</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="icc_form">
+						<div class="modal-body">
+							<div class="form-row">
+								<div class="form-group col">
+									<label for="type">Select ICC type</label>
+									<select onchange="showiccs()" class="form-control" id="type">
+										<option selected>Select ICC type</option>
+										<option>Site Induction</option>
+										<option>Product Certification</option>
+										<option>Health and Safety Qualification</option>
+										<option>General Certification</option>
+										<option>Qualification</option>
+									</select>
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+							</div>
+							<div id="icc_group" style="display: none">
+								<div class="form-row">
+									<div class="form-group col">
+										<label id="icc_title" for="icc"></label>
+										<select class="form-control" id="icc">
+											<option selected>Select ICC</option>
+										</select>
+										<div class="invalid-feedback">This field is required</div>
+									</div>
+								</div>
+								<div class="form-row" id="training_group">
+									<div class="form-group col">
+										<label for="training_date">Training Date</label>
+										<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="training_date" />
+										<div class="invalid-feedback">Invalid date</div>
+										<small>Format: yyyy-mm-dd</small>
+										<br />
+										<small>Leave blank to let employees know that they need to complete it</small>
+									</div>
+								</div>
+
+								<div class="container d-flex justify-content-center pt-3">
+									<table id="table" class="table table-striped">
+										<thead class="thead">
+											<tr>
+												<th>Employee</th>
+												<th>Assign ICC</th>
+											</tr>
+										</thead>
+										<tbody id="icc_table_body"></tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearForm()">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Assign" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 		<div class="modal fade" id="success" tabindex="-1">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -175,6 +243,7 @@
 						</button>
 					</li>
 				</ul>
+				<button class="btn btn-outline-success mr-3" type="button" onclick="addICCToggle()">Add ICC</button>
 				<button class="btn btn-outline-info mr-3" type="button" data-target="#region_modal" data-toggle="modal">Select Region</button>
 				<form class="form-inline my-2 my-lg-0">
 					<input class="form-control mr-sm-2" type="search" placeholder="Search" id="search" onkeyup="filter()" />
@@ -187,7 +256,7 @@
 						<tr>
 							<th>Name</th>
 							<th>Email</th>
-							<th>View Inductions</th>
+							<th>View ICCs</th>
 							<th>Recover Password</th>
 							<th>Edit</th>
 							<th>Delete</th>

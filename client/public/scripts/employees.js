@@ -1,3 +1,4 @@
+/* eslint-disable */
 $("#error").modal();
 
 $("#region_modal").on("show.bs.modal", function (e) {
@@ -49,7 +50,7 @@ function GetDataFromServer() {
 				var html = `
 				<tr>
 					<td>${employee.first_name} ${employee.last_name}</td>
-					<td>${employee.email}</td><td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View Inductions</button></td>
+					<td>${employee.email}</td><td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View ICCs</button></td>
 					<td><button class="btn btn-outline-secondary" onclick="recoverpassword('${employee.email}')">Recover Password</button></td>
 					<td><button class="btn btn-outline-info" onclick="edit('${employee.email}')">Edit Employee</button></td>
 					<td><button class="btn btn-outline-danger" onclick="deleteEmployee('${employee.email}')">Delete Employee</button></td>
@@ -217,4 +218,122 @@ function view(email) {
 		}
 		window.location.href = `/admin/employees/view`;
 	});
+}
+
+function addICCToggle() {
+	if ($("#region").val() != "" && $("#region").val() != "Select Region") {
+		$("#icc_modal").modal("show");
+
+		$.post("/get/employees", { region: $("#region").val() }, (data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			var employees = data.employees;
+			for (var i = 0; i < employees.length; i++) {
+				var employee = employees[i];
+				var html = `
+				<tr>
+					<td>${employee.first_name} ${employee.last_name}</td>
+					<td>
+						<div class="form-check">
+							<input id="${i}"  data-email="${employee.email}" style="width: 1rem; height: 1rem" class="form-check-input" type="checkbox" />
+						</div>
+					</td>
+				</tr>
+				`;
+				$("#icc_table_body").append(html);
+			}
+		});
+	}
+}
+var type = "";
+function showiccs() {
+	if ($("#type").val() != "Select ICC type") {
+		$("#icc_group").show();
+		$("#icc_title").text($("#type").val());
+		$("#icc").empty();
+		$("#training_group").show();
+		switch ($("#type").val()) {
+			case "Site Induction":
+				type = "site";
+				break;
+
+			case "Product Certification":
+				type = "product";
+				break;
+
+			case "Health and Safety Qualification":
+				type = "health";
+				break;
+
+			case "General Certification":
+				type = "certification";
+				break;
+
+			case "Qualification":
+				type = "qualification";
+				$("#training_group").hide();
+				break;
+		}
+		$("#icc").append("<option selected>Select ICC</option>");
+		$.post(`/get/${type}/templates`, (data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			var templates = data.templates;
+			templates.forEach((template) => {
+				var html = `<option id=${template.id}>${template.name}</option>`;
+				$("#icc").append(html);
+			});
+		});
+	} else {
+		$("#icc_group").hide();
+	}
+}
+$("#icc_form").submit((e) => {
+	e.preventDefault();
+	$("#type").removeClass("is-invalid");
+	$("#icc").removeClass("is-invalid");
+	$("#training_date").removeClass("is-invalid");
+
+	var selectedtype = $("#type").val();
+	var icc = $("#icc").val();
+	var training_date = $("#training_date").val();
+	var error = false;
+	if (selectedtype == "Select ICC type") {
+		error = true;
+		$("#type").addClass("is-invalid");
+	}
+	if (icc == "Select ICC") {
+		error = true;
+		$("#icc").addClass("is-invalid");
+	}
+	var today = new Date();
+	if ((training_date && new Date(training_date) == "Invalid Date") || (training_date && today < new Date(training_date))) {
+		error = true;
+		$("#training_date").addClass("is-invalid");
+	}
+	if (error) return;
+	var emails = [];
+	var children = $("#icc_table_body").children();
+	for (var i = 0; i < children.length; i++) {
+		var checked = $(`#${i}`).is(":checked") ? true : false;
+		if (checked) {
+			emails.push($(`#${i}`).data("email"));
+		}
+	}
+	if (emails.length == 0) return;
+
+	$.post(`/assign/${type}/template`, { emails: emails, icc: icc, training_date: training_date }, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		$("#icc_modal").modal("hide");
+		$("#success").modal("show");
+		clearICCForm();
+	});
+});
+
+function clearICCForm() {
+	$("#type").val("Select ICC type");
+	$("#type").val("Select ICC");
+	$("#training_date").val("");
+	var children = $("icc_table_body").children();
+	for (var i = 0; i < children.length; i++) {
+		$(`#${i}`).prop("checked", false);
+	}
 }

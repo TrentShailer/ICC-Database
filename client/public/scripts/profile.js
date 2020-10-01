@@ -1,3 +1,4 @@
+/* eslint-disable */
 $("#error").modal();
 function logout() {
 	window.location.href = "/logout";
@@ -41,7 +42,7 @@ $.post("/get/all/required", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card border-primary" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-primary" style="width: 18rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Completion Required</h5>
 						<hr />
@@ -77,7 +78,7 @@ $.post("/get/all/expired", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card border-danger" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-danger" style="width: 18rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Expired</h5>
 						<hr />
@@ -113,7 +114,7 @@ $.post("/get/all/expiring", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card border-warning" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-warning" style="width: 18rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Expiring Soon</h5>
 						<hr />
