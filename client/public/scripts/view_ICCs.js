@@ -13,6 +13,27 @@ const types = {
 };
 var type = null;
 
+var selectedID;
+
+function remove(id) {
+	selectedID = id;
+	$("#confirm_modal").modal("show");
+}
+
+function confirm() {
+	if (type != null) {
+		$.post(`/delete/employee/${type}/icc`, { id: selectedID }, (data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			$("#success").modal("show");
+			view(type);
+		});
+	}
+}
+
+function edit(id) {
+	selectedID = id;
+}
+
 function view(table) {
 	$("#loading").hide();
 	$("#nodata").hide();
@@ -20,6 +41,8 @@ function view(table) {
 	$("#table_body").empty();
 	switch (table) {
 		case "site":
+			type = types.site;
+
 			var head = `
 			<th>Site Induction Name</th>
 			<th>Training Date</th>
@@ -32,6 +55,8 @@ function view(table) {
 			$("#table_head").append(head);
 			break;
 		case "product":
+			type = types.product;
+
 			var head = `
 			<th>Product Certification Name</th>
 			<th>Training Date</th>
@@ -44,6 +69,8 @@ function view(table) {
 			$("#table_head").append(head);
 			break;
 		case "health":
+			type = types.health;
+
 			var head = `
 			<th>Health and Safety Qualification Name</th>
 			<th>Training Date</th>
@@ -57,6 +84,8 @@ function view(table) {
 			$("#table_head").append(head);
 			break;
 		case "certification":
+			type = types.certification;
+
 			var head = `
 			<th>Certification Name</th>
 			<th>Training Date</th>
@@ -69,6 +98,8 @@ function view(table) {
 			$("#table_head").append(head);
 			break;
 		case "qualification":
+			type = types.qualification;
+
 			var head = `
 			<th>Qualification</th>
 			<th>Notes</th>
@@ -95,7 +126,7 @@ function view(table) {
 				html += `<td>${entry[j]}</td>`;
 			}
 			html += `<td><button class="btn btn-outline-info" onclick="edit(${entry[colNum]})">Edit</button></td>`;
-			html += `<td><button class="btn btn-outline-danger" onclick="delete(${entry[colNum]})">Delete</button></td>`;
+			html += `<td><button class="btn btn-outline-danger" onclick="remove(${entry[colNum]})">Delete</button></td>`;
 			html += `</tr>`;
 			$("#table_body").append(html);
 		}

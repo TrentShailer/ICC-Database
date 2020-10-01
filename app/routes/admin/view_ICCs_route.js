@@ -216,4 +216,59 @@ app.post("/get/employee/qualification/iccs", async (req, res) => {
 	}
 });
 
+app.post("/delete/employee/site/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "DELETE FROM employee_site_inductions WHERE id = $1";
+		await database.query(sql, [req.body.id], false);
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/delete/employee/product/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "DELETE FROM employee_product_certifications WHERE id = $1";
+		await database.query(sql, [req.body.id], false);
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/delete/employee/health/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "DELETE FROM employee_health_qualifications WHERE id = $1";
+		await database.query(sql, [req.body.id], false);
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/delete/employee/certification/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "DELETE FROM employee_certifications WHERE id = $1";
+		await database.query(sql, [req.body.id], false);
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/delete/employee/qualification/icc", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "DELETE FROM employee_qualifications WHERE id = $1";
+		await database.query(sql, [req.body.id], false);
+		res.sendStatus(200);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
 module.exports = app;
