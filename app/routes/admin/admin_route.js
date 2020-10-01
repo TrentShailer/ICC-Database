@@ -128,7 +128,7 @@ app.post("/add/site/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -146,7 +146,7 @@ app.post("/add/product/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -165,7 +165,7 @@ app.post("/add/health/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -183,7 +183,7 @@ app.post("/add/certification/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -200,7 +200,7 @@ app.post("/add/qualification/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -216,7 +216,7 @@ app.post("/add/region/template", urlencodedParser, async (req, res) => {
 			req.session.error = "Failed to insert data into database";
 			return res.send({ redirect: "/admin" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -323,7 +323,7 @@ app.post("/delete/site/template", urlencodedParser, async (req, res) => {
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM site_templates WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -337,7 +337,7 @@ app.post("/delete/product/template", urlencodedParser, async (req, res) => {
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM product_templates WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -351,7 +351,7 @@ app.post("/delete/health/template", urlencodedParser, async (req, res) => {
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM health_templates WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -365,7 +365,7 @@ app.post("/delete/certification/template", urlencodedParser, async (req, res) =>
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM certification_templates WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -379,7 +379,7 @@ app.post("/delete/qualification/template", urlencodedParser, async (req, res) =>
 		await database.query(sql, [id], false);
 		sql = "DELETE FROM qualification_templates WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -390,7 +390,7 @@ app.post("/delete/region/template", urlencodedParser, async (req, res) => {
 		var id = req.body.id;
 		var sql = "DELETE FROM regions WHERE id = $1";
 		await database.query(sql, [id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -405,7 +405,7 @@ app.post("/edit/site/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var sql = "UPDATE site_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
 		await database.query(sql, [name, duration, notes, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -420,7 +420,7 @@ app.post("/edit/product/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var sql = "UPDATE product_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
 		await database.query(sql, [name, duration, notes, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -436,7 +436,7 @@ app.post("/edit/health/template", urlencodedParser, async (req, res) => {
 		var unit = req.body.unit;
 		var sql = "UPDATE health_templates SET name = $1, duration = $2, notes = $3, unit_standard = $4 WHERE id = $5";
 		await database.query(sql, [name, duration, notes, unit, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -451,7 +451,7 @@ app.post("/edit/certification/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var sql = "UPDATE certification_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
 		await database.query(sql, [name, duration, notes, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -465,7 +465,7 @@ app.post("/edit/qualification/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var sql = "UPDATE qualification_templates SET name = $1, notes = $2 WHERE id = $3";
 		await database.query(sql, [name, notes, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -478,7 +478,7 @@ app.post("/edit/region/template", urlencodedParser, async (req, res) => {
 		var name = req.body.name;
 		var sql = "UPDATE regions SET name = $1 WHERE id = $2";
 		await database.query(sql, [name, id], false);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
 		return res.send({ redirect: "/profile" });
@@ -626,7 +626,7 @@ app.post("/adduser", urlencodedParser, async (req, res) => {
 			return res.send({ redirect: "/admin" });
 		}
 		mailer.SendMail(email, "ASGL ICC Database login", `<h3>Email: ${email}</h3><br><h3>Password: ${password}</h3>`);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		return res.send({ redirect: "/profile" });

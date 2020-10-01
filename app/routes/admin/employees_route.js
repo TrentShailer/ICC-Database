@@ -56,7 +56,7 @@ app.post("/recover", urlencodedParser, async (req, res) => {
 		password = password.password;
 		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], false);
 		mailer.SendMail(req.body.email, "ASGL ICC Database Password Reset", `<h3>New Password: ${password}</h3>`);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		res.send({ error: "/profile" });
@@ -76,7 +76,7 @@ app.post("/delete/employee", urlencodedParser, async (req, res) => {
 		sql =
 			"DELETE FROM users, employee_information, employee_site_inductions, employee_product_certifications, employee_health_qualifications, employee_certifications, employee_qualifications WHERE user_id = $1";
 		await database.query(sql, [user_id], true);
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		return res.send({ redirect: "/profile" });
@@ -96,7 +96,7 @@ app.post("/set/employee_to_view", urlencodedParser, async (req, res) => {
 			first_name: result.rows[0].first_name,
 			last_name: result.rows[0].last_name,
 		});
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		return res.send({ redirect: "/profile" });
@@ -151,7 +151,7 @@ app.post("/edit/employee", urlencodedParser, async (req, res) => {
 			req.session.error = "Could not update employee";
 			return res.send({ redirect: "/admin/employees" });
 		}
-		res.send(200);
+		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		return res.send({ redirect: "/profile" });
@@ -253,7 +253,7 @@ async function handleAssigns(req, res, templateSQL, insertSQL, hasDuration) {
 		}
 		await database.query(insertSQL, params, true);
 	});
-	res.send(200);
+	res.sendStatus(200);
 }
 
 module.exports = app;

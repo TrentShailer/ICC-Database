@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>ASGL</title>
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	</head>
+	<body>
+		<% if(error) {%>
+		<div class="modal fade" id="error" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title text-danger" id="ModalLabel">Error</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p><%= error %></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Understood</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<%}%>
+		<div class="modal fade" id="success" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header text-success">
+						<h5 class="modal-title">Success</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<h6>Action was carried out successfully</h6>
+					</div>
+					<div class="modal-footer">
+						<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_qualification_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="add_title">Edit Qualification</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="edit_qualification_form">
+						<div class="modal-body">
+							<div>
+								<div class="form-group">
+									<label for="edit_qualification_name">Qualification</label>
+									<select id="edit_qualification_name" class="form-control" name="edit_qualification_name">
+										<option>Select a qualification</option>
+									</select>
+									<div class="invalid-feedback">You need to select a qualification</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_certification_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Certification</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="edit_certification_form">
+						<div class="modal-body">
+							<div>
+								<div class="form-group">
+									<label for="edit_certification_name">Certification</label>
+									<select id="edit_certification_name" class="form-control" name="edit_certification_name">
+										<option>Select a certification</option>
+									</select>
+									<div class="invalid-feedback">You need to select a certification</div>
+								</div>
+
+								<div class="form-group">
+									<label for="edit_certification_date">Certification Received Date</label>
+									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_certification_date" />
+									<div id="edit_certification_date_error" class="invalid-feedback">This field is required</div>
+									<small>Format: yyyy-mm-dd</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_certification_duration">Certification Duration</label>
+									<input type="number" class="form-control" id="edit_certification_duration" />
+									<div class="invalid-feedback">Invalid Duration</div>
+									<small>Optional (Number of months)</small>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_health_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Health and Safety Qualification</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="edit_health_form">
+						<div class="modal-body">
+							<div>
+								<div class="form-group">
+									<label for="edit_health_type">Health and Safety Qualification type</label>
+									<select id="edit_health_type" class="form-control" name="edit_health_type">
+										<option>Select a qualification type</option>
+									</select>
+									<div class="invalid-feedback">You need to select a qualification type</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_name">Health and Safety Qualification name</label>
+									<select id="edit_health_name" class="form-control" name="edit_health_name">
+										<option>Select a qualification name</option>
+									</select>
+									<div class="invalid-feedback">You need to select a qualification name</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_date">Training Date</label>
+									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_health_date" />
+									<div id="edit_health_date_error" class="invalid-feedback">This field is required</div>
+									<small>Format: yyyy-mm-dd</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_duration">Qualification Duration</label>
+									<input type="number" class="form-control" id="edit_health_duration" />
+									<div class="invalid-feedback">Invalid Duration</div>
+									<small>Optional (Number of months)</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_trainer">Training Provider</label>
+									<input type="text" class="form-control" id="edit_health_trainer" />
+									<small>Optional</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_unit">Unit Standard</label>
+									<input type="text" class="form-control" id="edit_health_unit" />
+									<small>Optional</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_health_notes">Notes</label>
+									<input type="text" class="form-control" id="edit_health_notes" />
+									<small>Optional</small>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_product_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Product Certification</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="edit_product_form">
+						<div class="modal-body">
+							<div>
+								<div class="form-group">
+									<label for="edit_product_name">Product</label>
+									<select id="edit_product_name" class="form-control" name="edit_product_name">
+										<option>Select a product</option>
+									</select>
+									<div class="invalid-feedback">You need to select a product</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_product_course">Course</label>
+									<select id="edit_product_course" class="form-control" name="edit_product_course">
+										<option>Select a course</option>
+									</select>
+									<div class="invalid-feedback">You need to select an induction</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_product_date">Training Date</label>
+									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_product_date" />
+									<div id="edit_product_date_error" class="invalid-feedback">This field is required</div>
+									<small>Format: yyyy-mm-dd</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_product_duration">Certification Duration</label>
+									<input type="number" class="form-control" id="edit_product_duration" />
+									<div class="invalid-feedback">Invalid Duration</div>
+									<small>Optional (Number of months)</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_product_notes">Notes</label>
+									<input type="text" class="form-control" id="edit_product_notes" />
+									<small>Optional</small>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="edit_site_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Edit Site Induction</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<form id="edit_site_form">
+						<div class="modal-body">
+							<div>
+								<div class="form-group">
+									<label for="edit_site_name">Site</label>
+									<select id="edit_site_name" class="form-control" name="edit_site_name">
+										<option>Select a site</option>
+									</select>
+									<div class="invalid-feedback">You need to select a site</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_site_induction">Induction</label>
+									<select id="edit_site_induction" class="form-control" name="edit_site_induction">
+										<option>Select an induction</option>
+									</select>
+									<div class="invalid-feedback">You need to select an induction</div>
+								</div>
+								<div class="form-group">
+									<label for="edit_site_date">Induction Date</label>
+									<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="edit_site_date" />
+									<div id="edit_site_date_error" class="invalid-feedback">This field is required</div>
+									<small>Format: yyyy-mm-dd</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_site_duration">Induction Duration</label>
+									<input type="number" class="form-control" id="edit_site_duration" />
+									<div class="invalid-feedback">Invalid Duration</div>
+									<small>Optional (Number of months)</small>
+								</div>
+								<div class="form-group">
+									<label for="edit_site_notes">Notes</label>
+									<input type="text" class="form-control" id="edit_site_notes" />
+									<small>Optional</small>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+							<input style="width: 10rem" type="submit" class="btn btn-success" value="Edit" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="fixed-top">
+			<div class="collapse" id="navbarToggleExternalContent">
+				<nav class="navbar navbar-dark bg-dark">
+					<button class="btn btn-outline-secondary btn-lg pl-5 pr-5" onclick="back()">
+						<span>
+							<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+								<path
+									fill-rule="evenodd"
+									d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z"
+								/>
+							</svg>
+						</span>
+						Back
+					</button>
+					<form class="form-inline my-2 my-lg-0">
+						<input class="form-control mr-sm-2" type="search" placeholder="Search" id="search" onkeyup="filter()" />
+					</form>
+				</nav>
+			</div>
+			<nav class="navbar navbar-dark bg-dark">
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-toggle="collapse"
+					data-target="#navbarToggleExternalContent"
+					aria-controls="navbarToggleExternalContent"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<ul class="nav mr-auto">
+					<li class="nav-item active pr-4 pt-1">
+						<a class="nav-link text-light" onclick="view('site')" href="#">Site Inductions</a>
+					</li>
+					<li class="nav-item active pr-4 pt-1">
+						<a class="nav-link text-light" onclick="view('product')" href="#">Product Certifications</a>
+					</li>
+					<li class="nav-item active pr-4 pt-1">
+						<a class="nav-link text-light" onclick="view('health')" href="#">Health and Safety</a>
+					</li>
+					<li class="nav-item active pr-4 pt-1">
+						<a class="nav-link text-light" onclick="view('certification')" href="#">General Certifications</a>
+					</li>
+					<li class="nav-item active pr-4 pt-1">
+						<a class="nav-link text-light" onclick="view('qualification')" href="#">Qualifications</a>
+					</li>
+				</ul>
+			</nav>
+			<div class="container d-flex justify-content-center pt-3">
+				<h2><%=name%>'s Inductions</h2>
+			</div>
+			<div class="d-flex justify-content-center pt-3 table-responsive">
+				<table id="table" class="table table-striped table-hover" style="width: 85%">
+					<thead class="thead-light">
+						<tr id="table_head"></tr>
+					</thead>
+					<tbody id="table_body"></tbody>
+				</table>
+			</div>
+			<div class="container d-flex justify-content-center pt-2">
+				<div class="text-primary spinner-border" style="display: none" id="loading"></div>
+			</div>
+			<div class="container d-flex justify-content-center pt-2">
+				<div class="alert alert-danger" id="nodata" style="width: 400px; display: none">No data</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+			integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+			integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+			crossorigin="anonymous"
+		></script>
+		<script src="/scripts/view_ICCs.js"></script>
+	</body>
+</html>
