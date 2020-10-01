@@ -223,7 +223,7 @@ function view(email) {
 function addICCToggle() {
 	if ($("#region").val() != "" && $("#region").val() != "Select Region") {
 		$("#icc_modal").modal("show");
-
+		$("#icc_table_body").empty();
 		$.post("/get/employees", { region: $("#region").val() }, (data) => {
 			if (data.redirect) window.location.href = data.redirect;
 			var employees = data.employees;
@@ -330,10 +330,11 @@ $("#icc_form").submit((e) => {
 
 function clearICCForm() {
 	$("#type").val("Select ICC type");
-	$("#type").val("Select ICC");
+	$("#icc").val("Select ICC");
 	$("#training_date").val("");
-	var children = $("icc_table_body").children();
+	var children = $("#icc_table_body").children();
 	for (var i = 0; i < children.length; i++) {
 		$(`#${i}`).prop("checked", false);
 	}
+	showiccs();
 }
