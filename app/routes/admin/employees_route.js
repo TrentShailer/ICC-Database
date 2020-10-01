@@ -24,13 +24,13 @@ app.post("/get/employees", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var employees = [];
 		var region = req.body.region;
-		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
+		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], true);
 		if (region_id == -1 || region_id == -2) {
 			req.session.error = "Failed to get region id";
 			return res.send({ redirect: "/admin" });
 		}
 		region_id = region_id.rows[0].id;
-		var result = await database.query("SELECT first_name, last_name, email FROM users WHERE region_id = $1", [region_id], false);
+		var result = await database.query("SELECT first_name, last_name, email FROM users WHERE region_id = $1", [region_id], true);
 		if (result == -2) {
 			req.session.error = "Failed to get user";
 			return res.send({ error: "/admin" });
@@ -54,7 +54,7 @@ app.post("/recover", urlencodedParser, async (req, res) => {
 		var password = security.GeneratePassword();
 		var encryped_password = password.encryped_password;
 		password = password.password;
-		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], false);
+		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], true);
 		mailer.SendMail(req.body.email, "ASGL ICC Database Password Reset", `<h3>New Password: ${password}</h3>`);
 		res.sendStatus(200);
 	} else {
@@ -67,15 +67,27 @@ app.post("/recover", urlencodedParser, async (req, res) => {
 app.post("/delete/employee", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var sql = "SELECT user_id FROM users WHERE email = $1";
-		var id_query = await database.query(sql, req.body.email.toLowerCase());
+		var email = req.body.email.toLowerCase();
+		console.log(email);
+		var id_query = await database.query(sql, [req.body.email.toLowerCase()], true);
 		if (id_query < 0) {
 			req.session.error = "Could not find user";
 			return res.send({ redirect: "/admin/employees" });
 		}
 		var user_id = id_query.rows[0].user_id;
-		sql =
-			"DELETE FROM users, employee_information, employee_site_inductions, employee_product_certifications, employee_health_qualifications, employee_certifications, employee_qualifications WHERE user_id = $1";
+		sql = "DELETE FROM employee_site_inductions WHERE user_id = $1";
 		await database.query(sql, [user_id], true);
+		sql = "DELETE FROM employee_product_certifications WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+		sql = "DELETE FROM employee_health_qualifications WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+		sql = "DELETE FROM employee_certifications WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+		sql = "DELETE FROM employee_qualifications WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+		sql = "DELETE FROM users WHERE user_id = $1";
+		await database.query(sql, [user_id], true);
+
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";
@@ -86,7 +98,7 @@ app.post("/delete/employee", urlencodedParser, async (req, res) => {
 app.post("/set/employee_to_view", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var sql = "SELECT user_id, first_name, last_name FROM users WHERE email = $1";
-		var result = await database.query(sql, [req.body.email], false);
+		var result = await database.query(sql, [req.body.email], true);
 		if (result < 0) {
 			req.session.error = "Could not find employee";
 			return res.send({ redirect: "/admin/employees" });
@@ -107,7 +119,7 @@ app.post("/get/employee", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var email = req.body.email;
 		var sql = "SELECT first_name, last_name, email, admin_access, notes, regions.name AS region FROM users INNER JOIN regions ON region_id = id WHERE email = $1";
-		var result = await database.query(sql, [email], false);
+		var result = await database.query(sql, [email], true);
 		if (result < 0) {
 			req.session.error = "Could not find employee";
 			return res.send({ redirect: "/admin/employees" });
@@ -139,14 +151,14 @@ app.post("/edit/employee", urlencodedParser, async (req, res) => {
 		var region = req.body.region;
 		var notes = req.body.notes;
 
-		var region_query = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
+		var region_query = await database.query("SELECT id FROM regions WHERE name = $1", [region], true);
 		if (region_query < 0) {
 			req.session.error = "Could not find region";
 			return res.send({ redirect: "/admin/employees" });
 		}
 
 		var sql = "UPDATE users SET first_name = $1, last_name = $2, email = $3, admin_access = $4, region_id = $5, notes = $6 WHERE email = $7";
-		var result = await database.query(sql, [first_name, last_name, email, admin_access, region_query.rows[0].id, notes, emailToEdit], false);
+		var result = await database.query(sql, [first_name, last_name, email, admin_access, region_query.rows[0].id, notes, emailToEdit], true);
 		if (result < 0) {
 			req.session.error = "Could not update employee";
 			return res.send({ redirect: "/admin/employees" });

@@ -24,7 +24,7 @@ app.get("/profile", async (req, res) => {
 app.post("/get/qualifications/all", async (req, res) => {
 	if (req.session.user) {
 		var sql = `SELECT name FROM employee_qualifications INNER JOIN qualification_templates ON template_id = qualification_templates.id WHERE user_id = $1`;
-		var result = await database.query(sql, [req.session.user.user_id], false);
+		var result = await database.query(sql, [req.session.user.user_id], true);
 		var table = [];
 		if (result < 1) {
 			return res.send({ table: table });
@@ -49,7 +49,7 @@ app.post("/get/all/required", async (req, res) => {
 
 		var sql =
 			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND training_date IS NULL";
-		var site_query = await database.query(sql, [req.session.user.user_id], false);
+		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
 				sites.push(row.name);
@@ -58,7 +58,7 @@ app.post("/get/all/required", async (req, res) => {
 
 		sql =
 			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND training_date IS NULL";
-		var product_query = await database.query(sql, [req.session.user.user_id], false);
+		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
 				products.push(row.name);
@@ -67,7 +67,7 @@ app.post("/get/all/required", async (req, res) => {
 
 		sql =
 			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND training_date IS NULL";
-		var health_query = await database.query(sql, [req.session.user.user_id], false);
+		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
 				health.push(row.name);
@@ -76,7 +76,7 @@ app.post("/get/all/required", async (req, res) => {
 
 		sql =
 			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND training_date IS NULL";
-		var certification_query = await database.query(sql, [req.session.user.user_id], false);
+		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {
 				certifications.push(row.name);
@@ -98,7 +98,7 @@ app.post("/get/all/expired", async (req, res) => {
 
 		var sql =
 			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
-		var site_query = await database.query(sql, [req.session.user.user_id], false);
+		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
 				sites.push(row.name);
@@ -107,7 +107,7 @@ app.post("/get/all/expired", async (req, res) => {
 
 		sql =
 			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
-		var product_query = await database.query(sql, [req.session.user.user_id], false);
+		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
 				products.push(row.name);
@@ -116,7 +116,7 @@ app.post("/get/all/expired", async (req, res) => {
 
 		sql =
 			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
-		var health_query = await database.query(sql, [req.session.user.user_id], false);
+		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
 				health.push(row.name);
@@ -125,7 +125,7 @@ app.post("/get/all/expired", async (req, res) => {
 
 		sql =
 			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
-		var certification_query = await database.query(sql, [req.session.user.user_id], false);
+		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {
 				certifications.push(row.name);
@@ -147,7 +147,7 @@ app.post("/get/all/expiring", async (req, res) => {
 
 		var sql =
 			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
-		var site_query = await database.query(sql, [req.session.user.user_id], false);
+		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
 				sites.push(row.name);
@@ -156,7 +156,7 @@ app.post("/get/all/expiring", async (req, res) => {
 
 		sql =
 			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
-		var product_query = await database.query(sql, [req.session.user.user_id], false);
+		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
 				products.push(row.name);
@@ -165,7 +165,7 @@ app.post("/get/all/expiring", async (req, res) => {
 
 		sql =
 			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
-		var health_query = await database.query(sql, [req.session.user.user_id], false);
+		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
 				health.push(row.name);
@@ -174,7 +174,7 @@ app.post("/get/all/expiring", async (req, res) => {
 
 		sql =
 			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
-		var certification_query = await database.query(sql, [req.session.user.user_id], false);
+		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {
 				certifications.push(row.name);

@@ -29,7 +29,7 @@ app.use(
 	cookieSession({
 		name: "session",
 		secret: "hvlzu5mbawohd8d0n6rjpabf16wuvt8epv5fmc6y",
-		maxAge: 2 * 60 * 60 * 1000,
+		maxAge: 30 * 60 * 1000,
 	})
 );
 

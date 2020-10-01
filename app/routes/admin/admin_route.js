@@ -23,7 +23,7 @@ app.get("/admin", async (req, res) => {
 app.post("/get/regions", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var sql = "SELECT name FROM regions";
-		var result = await database.query(sql, [], false);
+		var result = await database.query(sql, [], true);
 
 		var names = [];
 		if (result != -1 && result != -2 && result != -3) {
@@ -102,7 +102,7 @@ app.post("/get/region/templates", async (req, res) => {
 });
 
 async function SendTemplates(sql, req, res) {
-	var result = await database.query(sql, [], false);
+	var result = await database.query(sql, [], true);
 	var templates = [];
 	if (result < 0) {
 		return res.send({ templates: templates });
@@ -158,7 +158,7 @@ app.post("/add/health/template", urlencodedParser, async (req, res) => {
 		var name = req.body.name;
 		var duration = req.body.duration == "" ? null : req.body.duration;
 		var notes = req.body.notes;
-		var unit_standard = req.body.unit_standard;
+		var unit_standard = req.body.unit;
 		var sql = "INSERT INTO health_templates (name, duration, notes, unit_standard) VALUES ($1, $2, $3, $4)";
 		var result = await database.query(sql, [name, duration, notes, unit_standard], true);
 		if (result < 1) {
@@ -288,8 +288,8 @@ app.post("/get/region/templates/references", urlencodedParser, async (req, res) 
 		var id = req.body.id;
 		var sql1 = "SELECT user_id FROM users WHERE region_id = $1";
 		var sql2 = "SELECT name FROM regions WHERE id = $1";
-		var result = await database.query(sql1, [id], false);
-		var name_query = await database.query(sql2, [id], false);
+		var result = await database.query(sql1, [id], true);
+		var name_query = await database.query(sql2, [id], true);
 		var name = name_query.rows[0].name;
 		if (result == -1) {
 			return res.send({ name: name });
@@ -304,8 +304,8 @@ app.post("/get/region/templates/references", urlencodedParser, async (req, res) 
 });
 
 async function HandleReferences(sql1, sql2, id, req, res) {
-	var result = await database.query(sql1, [id], false);
-	var name_query = await database.query(sql2, [id], false);
+	var result = await database.query(sql1, [id], true);
+	var name_query = await database.query(sql2, [id], true);
 	var name = name_query.rows[0].name;
 	var num;
 	if (result == -1) {
@@ -320,9 +320,9 @@ app.post("/delete/site/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM employee_site_inductions WHERE template_id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		sql = "DELETE FROM site_templates WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -334,9 +334,9 @@ app.post("/delete/product/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM employee_product_certifications WHERE template_id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		sql = "DELETE FROM product_templates WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -348,9 +348,9 @@ app.post("/delete/health/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM employee_health_qualifications WHERE template_id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		sql = "DELETE FROM health_templates WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -362,9 +362,9 @@ app.post("/delete/certification/template", urlencodedParser, async (req, res) =>
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM employee_certifications WHERE template_id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		sql = "DELETE FROM certification_templates WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -376,9 +376,9 @@ app.post("/delete/qualification/template", urlencodedParser, async (req, res) =>
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM employee_qualifications WHERE template_id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		sql = "DELETE FROM qualification_templates WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -389,7 +389,7 @@ app.post("/delete/region/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "DELETE FROM regions WHERE id = $1";
-		await database.query(sql, [id], false);
+		await database.query(sql, [id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -404,7 +404,7 @@ app.post("/edit/site/template", urlencodedParser, async (req, res) => {
 		var duration = req.body.duration;
 		var notes = req.body.notes;
 		var sql = "UPDATE site_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
-		await database.query(sql, [name, duration, notes, id], false);
+		await database.query(sql, [name, duration, notes, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -419,7 +419,7 @@ app.post("/edit/product/template", urlencodedParser, async (req, res) => {
 		var duration = req.body.duration;
 		var notes = req.body.notes;
 		var sql = "UPDATE product_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
-		await database.query(sql, [name, duration, notes, id], false);
+		await database.query(sql, [name, duration, notes, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -435,7 +435,7 @@ app.post("/edit/health/template", urlencodedParser, async (req, res) => {
 		var notes = req.body.notes;
 		var unit = req.body.unit;
 		var sql = "UPDATE health_templates SET name = $1, duration = $2, notes = $3, unit_standard = $4 WHERE id = $5";
-		await database.query(sql, [name, duration, notes, unit, id], false);
+		await database.query(sql, [name, duration, notes, unit, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -450,7 +450,7 @@ app.post("/edit/certification/template", urlencodedParser, async (req, res) => {
 		var duration = req.body.duration;
 		var notes = req.body.notes;
 		var sql = "UPDATE certification_templates SET name = $1, duration = $2, notes = $3 WHERE id = $4";
-		await database.query(sql, [name, duration, notes, id], false);
+		await database.query(sql, [name, duration, notes, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -464,7 +464,7 @@ app.post("/edit/qualification/template", urlencodedParser, async (req, res) => {
 		var name = req.body.name;
 		var notes = req.body.notes;
 		var sql = "UPDATE qualification_templates SET name = $1, notes = $2 WHERE id = $3";
-		await database.query(sql, [name, notes, id], false);
+		await database.query(sql, [name, notes, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -477,7 +477,7 @@ app.post("/edit/region/template", urlencodedParser, async (req, res) => {
 		var id = req.body.id;
 		var name = req.body.name;
 		var sql = "UPDATE regions SET name = $1 WHERE id = $2";
-		await database.query(sql, [name, id], false);
+		await database.query(sql, [name, id], true);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -489,7 +489,7 @@ app.post("/get/site/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name, duration, notes FROM site_templates WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -505,7 +505,7 @@ app.post("/get/product/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name, duration, notes FROM product_templates WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -521,7 +521,7 @@ app.post("/get/health/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name, duration, notes, unit_standard FROM health_templates WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -537,7 +537,7 @@ app.post("/get/certification/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name, duration, notes FROM certification_templates WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -553,7 +553,7 @@ app.post("/get/qualification/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name, notes FROM qualification_templates WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -569,7 +569,7 @@ app.post("/get/region/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
 		var sql = "SELECT name FROM regions WHERE id = $1";
-		var result = await database.query(sql, [id], false);
+		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
 			res.send({ redirect: "/admin" });
@@ -584,7 +584,7 @@ app.post("/get/region/template", urlencodedParser, async (req, res) => {
 app.post("/emailexists", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		if (utility.ValidEmail(req.body.email)) {
-			var row = await database.query("SELECT user_id FROM users WHERE email = $1", [req.body.email], false);
+			var row = await database.query("SELECT user_id FROM users WHERE email = $1", [req.body.email], true);
 			if (row == -1) {
 				res.send({ isvalid: true });
 				return;
@@ -614,7 +614,7 @@ app.post("/adduser", urlencodedParser, async (req, res) => {
 		var password = security.GeneratePassword();
 		var encryptedPassword = password.encryped_password;
 		password = password.password;
-		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], false);
+		var region_id = await database.query("SELECT id FROM regions WHERE name = $1", [region], true);
 		if (region_id < 0) {
 			req.session.error = "Error adding data to database";
 			return res.send({ redirect: "/admin" });

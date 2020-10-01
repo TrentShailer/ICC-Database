@@ -165,7 +165,7 @@ $("#editform").submit((e) => {
 	if (error) return;
 	$.post(
 		`/edit/${table}/template`,
-		{ id: selectedID, name: name, duration: table == "qualification" ? null : duration, notes: notes, unit: table == "health" ? null : unit },
+		{ id: selectedID, name: name, duration: table == "qualification" ? null : duration, notes: notes, unit: table == "health" ? unit : null },
 		(data) => {
 			if (data.redirect) window.location.href = data.redirect;
 			$("#edit_modal").modal("hide");

@@ -22,14 +22,18 @@ app.post("/login", urlencodedParser, async (req, res) => {
 	var email = req.body.email;
 	if (utility.ValidEmail(email)) {
 		var password = req.body.password;
-		var result = await database.query("SELECT password FROM users WHERE email = $1", [email.toLowerCase()]);
+		var result = await database.query("SELECT password FROM users WHERE email = $1", [email.toLowerCase()], true);
 		if (result < 0) {
 			req.session.error = "Email or password incorrect";
 			return res.end("/login");
 		} else {
 			var encryptedPassword = security.Encrypt(password);
 			if (result.rows[0].password == encryptedPassword) {
-				var user = await database.query("SELECT user_id, first_name, last_name, email, region_id, admin_access, notes FROM users WHERE email = $1", [email.toLowerCase()]);
+				var user = await database.query(
+					"SELECT user_id, first_name, last_name, email, region_id, admin_access, notes FROM users WHERE email = $1",
+					[email.toLowerCase()],
+					true
+				);
 				if (user < 0) {
 					req.session.error = "Error getting user data";
 					return res.end("/login");

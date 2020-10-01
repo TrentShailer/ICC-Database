@@ -19,15 +19,17 @@ query = async (sql, params, logging) => {
 		const res = await client.query(sql, params);
 		t = process.hrtime(t);
 		if (res == null || res.rowCount == 0) {
-			if (logging) console.info({ result: "No results from query", sql: sql, duration: Math.round(t[1] / 1000000) + "ms" });
+			if (logging) console.info({ time: new Date().toTimeString().substr(0, 8), result: "No results from query", sql: sql, duration: Math.round(t[1] / 1000000) + "ms" });
 			client.release();
 			return -1;
 		}
-		if (logging) console.log({ result: "Executed query", duration: Math.round(t[1] / 1000000) + "ms", sql: sql, rows: res.rows });
+
+		if (logging)
+			console.log({ time: new Date().toTimeString().substr(0, 8), result: "Executed query", duration: Math.round(t[1] / 1000000) + "ms", sql: sql, rows: res.rows });
 		client.release();
 		return res;
 	} catch (err) {
-		console.log({ result: "Error executing query", sql: sql, params: params });
+		console.log({ time: new Date().toTimeString().substr(0, 8), result: "Error executing query", sql: sql, params: params });
 		if (logging) console.error(err.stack);
 		client.release();
 		return -2;
