@@ -40,7 +40,7 @@
 						<div class="modal-body">
 							<div class="form-group">
 								<label for="region">Region</label>
-								<select id="region" class="form-control" name="region">
+								<select id="region" class="form-control custom-select" name="region">
 									<option selected>Select Region</option>
 								</select>
 							</div>
@@ -117,7 +117,7 @@
 							<div class="form-row">
 								<div class="form-group col">
 									<label for="edit_region">Region</label>
-									<select class="form-control" id="edit_region">
+									<select class="form-control custom-select" id="edit_region">
 										<option selected>Select Region</option>
 									</select>
 									<div class="invalid-feedback">This field is required</div>
@@ -126,7 +126,7 @@
 							<div class="form-row">
 								<div class="form-group col">
 									<label for="edit_notes">Notes</label>
-									<input type="text" class="form-control" id="edit_notes" />
+									<textarea class="form-control" id="edit_notes" rows="3"></textarea>
 								</div>
 							</div>
 						</div>
@@ -152,9 +152,9 @@
 						<div class="modal-body">
 							<div class="form-row">
 								<div class="form-group col">
-									<label for="type">Select ICC type</label>
-									<select onchange="showiccs()" class="form-control" id="type">
-										<option selected>Select ICC type</option>
+									<label for="type">Select ICC Type</label>
+									<select onchange="showiccs()" class="form-control custom-select" id="type">
+										<option selected>Select ICC Type</option>
 										<option>Site Induction</option>
 										<option>Product Certification</option>
 										<option>Health and Safety Qualification</option>
@@ -168,7 +168,7 @@
 								<div class="form-row">
 									<div class="form-group col">
 										<label id="icc_title" for="icc"></label>
-										<select class="form-control" id="icc">
+										<select class="form-control custom-select" id="icc">
 											<option selected>Select ICC</option>
 										</select>
 										<div class="invalid-feedback">This field is required</div>
@@ -256,6 +256,7 @@
 						<tr>
 							<th>Name</th>
 							<th>Email</th>
+							<th>Notes</th>
 							<th>View ICCs</th>
 							<th>Recover Password</th>
 							<th>Edit</th>

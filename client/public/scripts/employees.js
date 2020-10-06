@@ -1,5 +1,25 @@
 /* eslint-disable */
 $("#error").modal();
+$.post("/get/selected_region", (regiondata) => {
+	if (regiondata.region) {
+		$("#region").empty();
+		$("#region").append("<option selected>Select Region</option>");
+		$.post("/get/regions", (data) => {
+			var names = data.names;
+			for (var i = 0; i < names.length; i++) {
+				var html = `<option>${names[i]}</option>`;
+				$("#region").append(html);
+			}
+			$("#region").val(regiondata.region);
+			$("#nodata").hide();
+			$("#loading").show();
+			GetDataFromServer();
+			if (showAddMenu) {
+				addICCToggle();
+			}
+		});
+	}
+});
 
 $("#region_modal").on("show.bs.modal", function (e) {
 	$("#region").empty();
@@ -27,7 +47,13 @@ $("#region_form").submit((e) => {
 	$("#region_modal").modal("hide");
 	$("#nodata").hide();
 	$("#loading").show();
-	GetDataFromServer();
+	$.post("/save/selected_region", { region: $("#region").val() }, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		GetDataFromServer();
+		if (showAddMenu) {
+			addICCToggle();
+		}
+	});
 });
 
 function GetDataFromServer() {
@@ -50,7 +76,9 @@ function GetDataFromServer() {
 				var html = `
 				<tr>
 					<td>${employee.first_name} ${employee.last_name}</td>
-					<td>${employee.email}</td><td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View ICCs</button></td>
+					<td>${employee.email}</td>
+					<td>${employee.notes.replace(/(?:\r\n|\r|\n)/g, "<br>")}</td>
+					<td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View ICCs</button></td>
 					<td><button class="btn btn-outline-secondary" onclick="recoverpassword('${employee.email}')">Recover Password</button></td>
 					<td><button class="btn btn-outline-info" onclick="edit('${employee.email}')">Edit Employee</button></td>
 					<td><button class="btn btn-outline-danger" onclick="deleteEmployee('${employee.email}')">Delete Employee</button></td>
@@ -81,7 +109,7 @@ function edit(email) {
 			$("#email").val(data.user.email);
 			$("#admin").prop("checked", data.user.admin_access);
 			$("#edit_region").val(data.user.region);
-			$("#notes").val(data.user.notes);
+			$("#edit_notes").val(data.user.notes);
 		});
 	});
 }
@@ -134,7 +162,7 @@ $("#edit_form").submit((e) => {
 		var last_name = $("#last_name").val();
 		var admin_access = $("#admin").is(":checked") ? true : false;
 		var region = $("#edit_region").val();
-		var notes = $("#notes").val();
+		var notes = $("#edit_notes").val();
 		$.post(
 			"/edit/employee",
 			{
@@ -208,7 +236,7 @@ function clearForm() {
 	$("#email").val("");
 	$("#admin").prop("checked", false);
 	$("#edit_region").val("Select Region");
-	$("#notes").val("");
+	$("#edit_notes").val("");
 }
 
 function view(email) {
@@ -219,8 +247,9 @@ function view(email) {
 		window.location.href = `/admin/employees/view`;
 	});
 }
-
+var showAddMenu = false;
 function addICCToggle() {
+	showAddMenu = false;
 	if ($("#region").val() != "" && $("#region").val() != "Select Region") {
 		$("#icc_modal").modal("show");
 		$("#icc_table_body").empty();
@@ -234,7 +263,7 @@ function addICCToggle() {
 					<td>${employee.first_name} ${employee.last_name}</td>
 					<td>
 						<div class="form-check">
-							<input id="${i}"  data-email="${employee.email}" style="width: 1rem; height: 1rem" class="form-check-input" type="checkbox" />
+							<input id="email${i}"  data-email="${employee.email}" style="width: 1rem; height: 1rem" class="form-check-input" type="checkbox" />
 						</div>
 					</td>
 				</tr>
@@ -242,11 +271,14 @@ function addICCToggle() {
 				$("#icc_table_body").append(html);
 			}
 		});
+	} else {
+		showAddMenu = true;
+		$("#region_modal").modal("show");
 	}
 }
 var type = "";
 function showiccs() {
-	if ($("#type").val() != "Select ICC type") {
+	if ($("#type").val() != "Select ICC Type") {
 		$("#icc_group").show();
 		$("#icc_title").text($("#type").val());
 		$("#icc").empty();
@@ -313,13 +345,14 @@ $("#icc_form").submit((e) => {
 	var emails = [];
 	var children = $("#icc_table_body").children();
 	for (var i = 0; i < children.length; i++) {
-		var checked = $(`#${i}`).is(":checked") ? true : false;
+		var checked = $(`#email${i}`).is(":checked") ? true : false;
 		if (checked) {
-			emails.push($(`#${i}`).data("email"));
+			var email = $(`#email${i}`).data().email;
+			emails.push(email);
 		}
 	}
 	if (emails.length == 0) return;
-
+	icc = $("#icc").children(":selected").attr("id");
 	$.post(`/assign/${type}/template`, { emails: emails, icc: icc, training_date: training_date }, (data) => {
 		if (data.redirect) window.location.href = data.redirect;
 		$("#icc_modal").modal("hide");
@@ -329,12 +362,12 @@ $("#icc_form").submit((e) => {
 });
 
 function clearICCForm() {
-	$("#type").val("Select ICC type");
+	$("#type").val("Select ICC Type");
 	$("#icc").val("Select ICC");
 	$("#training_date").val("");
 	var children = $("#icc_table_body").children();
 	for (var i = 0; i < children.length; i++) {
-		$(`#${i}`).prop("checked", false);
+		$(`#email${i}`).prop("checked", false);
 	}
 	showiccs();
 }

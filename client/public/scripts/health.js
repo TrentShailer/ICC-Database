@@ -22,7 +22,7 @@ $.post("/get/employee/health/iccs", { self: true }, (data) => {
 		<td>${entry[3]}</td>
 		<td>${entry[4]}</td>
 		<td>${entry[5]}</td>
-		<td>${entry[6]}</td>
+		<td>${entry[6].replace(/(?:\r\n|\r|\n)/g, "<br>")}</td>
 		</tr>`;
 		$("#table_body").append(html);
 	}

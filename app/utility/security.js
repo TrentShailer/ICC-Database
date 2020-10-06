@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const CryptoJS = require("crypto-js");
-const salt = "a337f34b-1b8a-407a-9c03-e8ea4b1b8b2c";
+const salt = "48a628ad6d701ef0a0c63f6ca11c3f94284a3a7ad214f6309b70ed5b58fc4db3";
 
 function GetUUID() {
 	return uuid.v1();
@@ -8,7 +8,7 @@ function GetUUID() {
 
 function Encrypt(string) {
 	return CryptoJS.PBKDF2(string, salt, {
-		keySize: 8,
+		keySize: 512 / 32,
 	}).toString();
 }
 

@@ -96,7 +96,7 @@
 							<div class="form-row" id="edit_form_notes">
 								<div class="col mb-3">
 									<label for="edit_notes">Notes</label>
-									<input type="text" class="form-control" id="edit_notes" value="" />
+									<textarea class="form-control" id="edit_notes" rows="3"></textarea>
 									<small>Optional</small>
 								</div>
 							</div>
@@ -146,7 +146,7 @@
 							<div class="form-row" id="add_form_notes">
 								<div class="col mb-3">
 									<label for="add_notes">Notes</label>
-									<input type="text" class="form-control" id="add_notes" value="" />
+									<textarea class="form-control" id="add_notes" rows="3"></textarea>
 									<small>Optional</small>
 								</div>
 							</div>
@@ -231,7 +231,7 @@
 							<div class="form-row">
 								<div class="form-group col">
 									<label for="region">Region</label>
-									<select class="form-control" id="region">
+									<select class="form-control custom-select" id="region">
 										<option selected>Select Region</option>
 									</select>
 									<div class="invalid-feedback">This field is required</div>
@@ -240,7 +240,7 @@
 							<div class="form-row">
 								<div class="form-group col">
 									<label for="notes">Notes</label>
-									<input type="text" class="form-control" id="notes" />
+									<textarea class="form-control" id="notes" rows="3"></textarea>
 								</div>
 							</div>
 						</div>
@@ -287,7 +287,7 @@
 							<div class="form-row">
 								<div class="form-group col">
 									<label for="report_region">Region</label>
-									<select class="form-control" id="report_region">
+									<select class="form-control custom-select" id="report_region">
 										<option selected>Select Region</option>
 									</select>
 									<div class="invalid-feedback">This field is required</div>
@@ -307,7 +307,7 @@
 			<nav class="navbar navbar-dark bg-dark">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
-						<button class="btn btn-outline-secondary btn-lg pl-5 pr-5" onclick="back()">
+						<button class="btn btn-outline-secondary btn-lg pl-5 pr-5 mr-5" onclick="back()">
 							<span>
 								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-left" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 									<path
@@ -317,6 +317,18 @@
 								</svg>
 							</span>
 							Back
+						</button>
+						<button class="btn btn-outline-info btn-lg pl-5 pr-5" onclick="window.location.href = '/admin/help'">
+							<span>
+								<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+									<path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+									<path
+										d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"
+									/>
+									<circle cx="8" cy="4.5" r="1" />
+								</svg>
+							</span>
+							Help
 						</button>
 					</li>
 				</ul>

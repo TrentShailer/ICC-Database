@@ -88,10 +88,10 @@ function add() {
 	$("#nodata").hide();
 	if (table != "region") {
 		$("#add_title").text(`Add new ${type.toLowerCase()} template`);
-		$("#add_label").text(`${type} template name`);
+		$("#add_label").text(`${type} Template Name`);
 	} else {
 		$("#add_title").text(`Add new ${type.toLowerCase()}`);
-		$("#add_label").text(`Region name`);
+		$("#add_label").text(`Region Name`);
 	}
 
 	if (table == "qualification") $("#add_form_duration").hide();
@@ -123,9 +123,9 @@ function edit(id) {
 		$("#edit_unit").val(data.unit);
 
 		if (table != "region") {
-			$("#edit_label").text(`${type} template name`);
+			$("#edit_label").text(`${type} Template Name`);
 		} else {
-			$("#edit_label").text(`Region name`);
+			$("#edit_label").text(`Region Name`);
 		}
 
 		if (table == "qualification") $("#edit_form_duration").hide();
@@ -154,7 +154,7 @@ $("#editform").submit((e) => {
 	var notes = $("#edit_notes").val();
 	var unit = $("#edit_unit").val();
 	var error = false;
-	if ((duration != null && duration > 96) || (duration != null && duration < 1)) {
+	if ((duration != null && duration > 180) || (duration != null && duration < 1)) {
 		$("#edit_duration").addClass("is-invalid");
 		error = true;
 	}
@@ -184,7 +184,7 @@ function remove(id) {
 	$.post(`/get/${table}/templates/references`, { id: selectedID }, (data) => {
 		if (data.redirect) window.location.href = data.redirect;
 		if (table != "region") {
-			$("#confirm_title").text(`Confirm deleteion of ${data.name} template`);
+			$("#confirm_title").text(`Confirm Deleteion of ${data.name} Template`);
 			if (data.number > 0) {
 				$("#disclaimer").html(
 					`<strong>WARNING</strong><br>There are <strong>${data.number}</strong> employees with this ICC, deleting this template will remove it from them.<br>This can not be undone`
@@ -195,7 +195,7 @@ function remove(id) {
 
 			$("#confirm_modal").modal("show");
 		} else {
-			$("#confirm_title").text(`Confirm deleteion of ${data.name} region`);
+			$("#confirm_title").text(`Confirm Deleteion of ${data.name} Region`);
 
 			$("#disclaimer").html(`<strong>WARNING</strong><br>This can not be undone`);
 
@@ -216,12 +216,12 @@ $("#addform").submit((e) => {
 	e.preventDefault();
 	var name = $("#add_name").val();
 	$("#add_duration").removeClass("is-invalid");
-	$("#add_nane").removeClass("is-invalid");
+	$("#add_name").removeClass("is-invalid");
 	var duration = $("#add_duration").val() == "" ? null : $("#add_duration").val();
 	var notes = $("#add_notes").val();
 	var unit = $("#add_unit").val();
 	var error = false;
-	if ((duration != null && duration > 96) || (duration != null && duration < 1)) {
+	if ((duration != null && duration > 180) || (duration != null && duration < 1)) {
 		$("#add_duration").addClass("is-invalid");
 		error = true;
 	}

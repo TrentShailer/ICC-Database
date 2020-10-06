@@ -40,6 +40,8 @@ app.post("/get/employee/site/iccs", urlencodedParser, async (req, res) => {
 			if (siteQuery < -2) {
 				req.session.error = "Failed to fetch data from server";
 				return res.send({ redirect: "/admin/employees/view" });
+			} else if (siteQuery == -1) {
+				return res.send({ table: table });
 			}
 			var today = new Date();
 			for (var i = 0; i < siteQuery.rows.length; i++) {
@@ -85,6 +87,7 @@ app.post("/get/employee/product/iccs", urlencodedParser, async (req, res) => {
 			} else if (Query == -1) {
 				return res.send({ table: table });
 			}
+
 			var today = new Date();
 			for (var i = 0; i < Query.rows.length; i++) {
 				var row = Query.rows[i];

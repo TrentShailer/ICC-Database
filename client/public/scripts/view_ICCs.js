@@ -188,7 +188,9 @@ function view(table) {
 			var colNum = entry.length - 1;
 			var html = `<tr>`;
 			for (var j = 0; j < colNum; j++) {
-				html += `<td>${entry[j]}</td>`;
+				var entryToAdd = entry[j];
+				if (j == entry.length - 2) entryToAdd = entryToAdd.replace(/(?:\r\n|\r|\n)/g, "<br>");
+				html += `<td>${entryToAdd}</td>`;
 			}
 			html += `<td><button class="btn btn-outline-info" onclick="edit(${entry[colNum]})">Edit</button></td>`;
 			html += `<td><button class="btn btn-outline-danger" onclick="remove(${entry[colNum]})">Delete</button></td>`;

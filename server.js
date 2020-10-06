@@ -4,7 +4,7 @@ const server = require("http").createServer(app);
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
-
+const fs = require("fs");
 const database = require("./app/utility/database.js");
 const security = require("./app/utility/security.js");
 const mailer = require("./app/utility/mailer.js");
@@ -60,6 +60,36 @@ app.get("/", async (req, res) => {
 	res.redirect("/login");
 });
 
+app.get("/admin/help", async (req, res) => {
+	if (req.session.user && req.session.user.admin_access) {
+		var adminQuery = await database.query("SELECT id FROM regions WHERE name = 'admin'");
+		if (adminQuery < 0) {
+			req.session.error = "Failed to get data from server";
+			return res.redirect("/admin");
+		}
+		var adminacc = req.session.user.region_id == adminQuery.rows[0].id ? true : false;
+		fs.readFile(__dirname + "/app/data/help.txt", function (err, buf) {
+			if (err) {
+				req.session.error = "Failed to get help data from server";
+				return res.redirect("/admin");
+			}
+			res.render("admin/help", { admin: adminacc, helpInfo: buf });
+
+			/* 
+			var data = "New File Contents";
+
+			fs.writeFile("temp.txt", data, (err) => {
+			if (err) console.log(err);
+			console.log("Successfully Written to File.");
+			});
+			*/
+		});
+	} else {
+		req.session.error = "You do not have permission to view this";
+		res.redirect("/profile");
+	}
+});
+
 app.get("/logout", async (req, res) => {
 	req.session = null;
 	res.redirect("/login");
@@ -105,7 +135,7 @@ async function CreateAccount(password, email, first_name, last_name) {
 	var admin_access = true;
 	await database.query(
 		"INSERT INTO users (user_id, first_name, last_name, email, password, region_id, admin_access, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-		[user_id, first_name, last_name, email, password, region_id, admin_access, null],
+		[user_id, first_name, last_name, email, password, region_id, admin_access, ""],
 		true
 	);
 }

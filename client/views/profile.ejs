@@ -29,21 +29,21 @@
 		<div class="fixed-top">
 			<nav class="navbar navbar-dark bg-dark">
 				<ul class="nav mr-auto">
-					<li class="nav-item active">
-						<a class="nav-link text-light" href="/site">View Site Inductions </a>
+					<li class="nav-item active mr-4">
+						<button type="button" onclick="window.location.href='/site'" class="btn btn-secondary" data-dismiss="modal">View Site Inductions</button>
 					</li>
-					<li class="nav-item active">
-						<a class="nav-link text-light" href="/product">View Product Certification</a>
+					<li class="nav-item active mr-4">
+						<button type="button" onclick="window.location.href='/product'" class="btn btn-secondary" data-dismiss="modal">View Product Certification</button>
 					</li>
-					<li class="nav-item active">
-						<a class="nav-link text-light" href="/health">View Health and Safety Qualifications</a>
+					<li class="nav-item active mr-4">
+						<button type="button" onclick="window.location.href='/health'" class="btn btn-secondary" data-dismiss="modal">View Health and Safety Qualifications</button>
 					</li>
-					<li class="nav-item active">
-						<a class="nav-link text-light" href="/certification">View General Certifications</a>
+					<li class="nav-item active mr-4">
+						<button type="button" onclick="window.location.href='/certification'" class="btn btn-secondary" data-dismiss="modal">View General Certifications</button>
 					</li>
 					<% if(admin == true) {%>
-					<li class="nav-item active">
-						<a class="nav-link text-light" href="/admin">Administration</a>
+					<li style="margin-left: 15rem" class="nav-item active">
+						<button type="button" onclick="window.location.href='/admin'" class="btn btn-secondary" data-dismiss="modal">Administration</button>
 					</li>
 					<% } %>
 				</ul>
