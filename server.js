@@ -17,12 +17,13 @@ const utility = require("./app/utility/utility.js");
 const port = 3002;
 const hostname = "192.168.9.101";
 
+// TODO Order data send to client
+
+// TODO Help popovers EVERYWHERE
 // TODO toggle add for all employees
 // TODO Calender for dates
-// TODO training date null turns into epoch on edit
+
 // TODO Possible change login into 365
-// TODO Order data send to client
-// TODO Help popovers EVERYWHERE
 
 app.set("view engine", "ejs");
 app.set("views", utility.view);

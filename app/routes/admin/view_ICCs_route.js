@@ -339,7 +339,7 @@ async function getICCData(req, res, sql) {
 		req.session.error = "Failed to fetch ICC from server";
 		return res.send({ redirect: "/admin/employees/view" });
 	}
-	res.send({ training_date: new Date(query.rows[0].training_date).toISOString().substr(0, 10) });
+	res.send({ training_date: query.rows[0].training_date == null ? "" : new Date(query.rows[0].training_date).toISOString().substr(0, 10) });
 }
 
 app.post("/edit/employee/site/icc", urlencodedParser, async (req, res) => {
