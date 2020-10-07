@@ -4,7 +4,6 @@ const server = require("http").createServer(app);
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
-const fs = require("fs");
 const database = require("./app/utility/database.js");
 const security = require("./app/utility/security.js");
 const mailer = require("./app/utility/mailer.js");
@@ -18,6 +17,13 @@ const utility = require("./app/utility/utility.js");
 const port = 3002;
 const hostname = "192.168.9.101";
 
+// TODO toggle add for all employees
+// TODO Calender for dates
+// TODO training date null turns into epoch on edit
+// TODO Possible change login into 365
+// TODO Order data send to client
+// TODO Help popovers EVERYWHERE
+
 app.set("view engine", "ejs");
 app.set("views", utility.view);
 app.set("view options", { layout: false });
@@ -29,7 +35,7 @@ app.use(
 	cookieSession({
 		name: "session",
 		secret: "hvlzu5mbawohd8d0n6rjpabf16wuvt8epv5fmc6y",
-		maxAge: 30 * 60 * 1000,
+		maxAge: 60 * 60 * 1000,
 	})
 );
 
@@ -58,36 +64,6 @@ app.use(require("./app/routes/admin/view_ICCs_route.js"));
 
 app.get("/", async (req, res) => {
 	res.redirect("/login");
-});
-
-app.get("/admin/help", async (req, res) => {
-	if (req.session.user && req.session.user.admin_access) {
-		var adminQuery = await database.query("SELECT id FROM regions WHERE name = 'admin'");
-		if (adminQuery < 0) {
-			req.session.error = "Failed to get data from server";
-			return res.redirect("/admin");
-		}
-		var adminacc = req.session.user.region_id == adminQuery.rows[0].id ? true : false;
-		fs.readFile(__dirname + "/app/data/help.txt", function (err, buf) {
-			if (err) {
-				req.session.error = "Failed to get help data from server";
-				return res.redirect("/admin");
-			}
-			res.render("admin/help", { admin: adminacc, helpInfo: buf });
-
-			/* 
-			var data = "New File Contents";
-
-			fs.writeFile("temp.txt", data, (err) => {
-			if (err) console.log(err);
-			console.log("Successfully Written to File.");
-			});
-			*/
-		});
-	} else {
-		req.session.error = "You do not have permission to view this";
-		res.redirect("/profile");
-	}
 });
 
 app.get("/logout", async (req, res) => {
