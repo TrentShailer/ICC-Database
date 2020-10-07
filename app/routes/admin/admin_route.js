@@ -22,7 +22,7 @@ app.get("/admin", async (req, res) => {
 
 app.post("/get/regions", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT name FROM regions";
+		var sql = "SELECT name FROM regions ORDER BY name ASC";
 		var result = await database.query(sql, [], true);
 
 		var names = [];
@@ -93,7 +93,7 @@ app.post("/get/qualification/templates", async (req, res) => {
 
 app.post("/get/region/templates", async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT id, name FROM regions";
+		var sql = "SELECT id, name FROM regions ORDER BY name ASC";
 		SendTemplates(sql, req, res);
 	} else {
 		req.session.error = "You dont have permission to view this";
@@ -488,7 +488,7 @@ app.post("/edit/region/template", urlencodedParser, async (req, res) => {
 app.post("/get/site/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name, duration, notes FROM site_templates WHERE id = $1";
+		var sql = "SELECT name, duration, notes FROM site_templates WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
@@ -504,7 +504,7 @@ app.post("/get/site/template", urlencodedParser, async (req, res) => {
 app.post("/get/product/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name, duration, notes FROM product_templates WHERE id = $1";
+		var sql = "SELECT name, duration, notes FROM product_templates WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
@@ -520,7 +520,7 @@ app.post("/get/product/template", urlencodedParser, async (req, res) => {
 app.post("/get/health/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name, duration, notes, unit_standard FROM health_templates WHERE id = $1";
+		var sql = "SELECT name, duration, notes, unit_standard FROM health_templates WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
@@ -536,7 +536,7 @@ app.post("/get/health/template", urlencodedParser, async (req, res) => {
 app.post("/get/certification/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name, duration, notes FROM certification_templates WHERE id = $1";
+		var sql = "SELECT name, duration, notes FROM certification_templates WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
@@ -552,7 +552,7 @@ app.post("/get/certification/template", urlencodedParser, async (req, res) => {
 app.post("/get/qualification/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name, notes FROM qualification_templates WHERE id = $1";
+		var sql = "SELECT name, notes FROM qualification_templates WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";
@@ -568,7 +568,7 @@ app.post("/get/qualification/template", urlencodedParser, async (req, res) => {
 app.post("/get/region/template", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
 		var id = req.body.id;
-		var sql = "SELECT name FROM regions WHERE id = $1";
+		var sql = "SELECT name FROM regions WHERE id = $1 ORDER BY name ASC";
 		var result = await database.query(sql, [id], true);
 		if (result < 0) {
 			req.session.error = "Failed to get data from server";

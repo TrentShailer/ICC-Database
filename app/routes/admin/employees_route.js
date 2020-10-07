@@ -50,7 +50,7 @@ app.post("/get/employees", urlencodedParser, async (req, res) => {
 			return res.send({ redirect: "/admin" });
 		}
 		region_id = region_id.rows[0].id;
-		var result = await database.query("SELECT first_name, last_name, email, notes FROM users WHERE region_id = $1", [region_id], true);
+		var result = await database.query("SELECT first_name, last_name, email, notes FROM users WHERE region_id = $1 ORDER BY first_name ASC", [region_id], true);
 		if (result == -2) {
 			req.session.error = "Failed to get user";
 			return res.send({ error: "/admin" });

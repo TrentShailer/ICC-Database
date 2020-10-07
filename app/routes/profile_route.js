@@ -23,7 +23,7 @@ app.get("/profile", async (req, res) => {
 
 app.post("/get/qualifications/all", async (req, res) => {
 	if (req.session.user) {
-		var sql = `SELECT name FROM employee_qualifications INNER JOIN qualification_templates ON template_id = qualification_templates.id WHERE user_id = $1`;
+		var sql = `SELECT name FROM employee_qualifications INNER JOIN qualification_templates ON template_id = qualification_templates.id WHERE user_id = $1 ORDER BY name ASC`;
 		var result = await database.query(sql, [req.session.user.user_id], true);
 		var table = [];
 		if (result < 1) {
@@ -48,7 +48,7 @@ app.post("/get/all/required", async (req, res) => {
 		var certifications = [];
 
 		var sql =
-			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND training_date IS NULL";
+			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND training_date IS NULL ORDER BY name ASC";
 		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
@@ -57,7 +57,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND training_date IS NULL";
+			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND training_date IS NULL ORDER BY name ASC";
 		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
@@ -66,7 +66,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND training_date IS NULL";
+			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND training_date IS NULL ORDER BY name ASC";
 		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
@@ -75,7 +75,7 @@ app.post("/get/all/required", async (req, res) => {
 		}
 
 		sql =
-			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND training_date IS NULL";
+			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND training_date IS NULL ORDER BY name ASC";
 		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {
@@ -97,7 +97,7 @@ app.post("/get/all/expired", async (req, res) => {
 		var certifications = [];
 
 		var sql =
-			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
+			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date < NOW() ORDER BY name ASC";
 		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
@@ -106,7 +106,7 @@ app.post("/get/all/expired", async (req, res) => {
 		}
 
 		sql =
-			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
+			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date < NOW() ORDER BY name ASC";
 		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
@@ -115,7 +115,7 @@ app.post("/get/all/expired", async (req, res) => {
 		}
 
 		sql =
-			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
+			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date < NOW() ORDER BY name ASC";
 		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
@@ -124,7 +124,7 @@ app.post("/get/all/expired", async (req, res) => {
 		}
 
 		sql =
-			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date < NOW()";
+			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date < NOW() ORDER BY name ASC";
 		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {
@@ -146,7 +146,7 @@ app.post("/get/all/expiring", async (req, res) => {
 		var certifications = [];
 
 		var sql =
-			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
+			"SELECT site_templates.name AS name FROM employee_site_inductions INNER JOIN site_templates ON template_id = site_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days' ORDER BY name ASC";
 		var site_query = await database.query(sql, [req.session.user.user_id], true);
 		if (site_query != -1) {
 			site_query.rows.forEach((row) => {
@@ -155,7 +155,7 @@ app.post("/get/all/expiring", async (req, res) => {
 		}
 
 		sql =
-			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
+			"SELECT product_templates.name AS name FROM employee_product_certifications INNER JOIN product_templates ON template_id = product_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days' ORDER BY name ASC";
 		var product_query = await database.query(sql, [req.session.user.user_id], true);
 		if (product_query != -1) {
 			product_query.rows.forEach((row) => {
@@ -164,7 +164,7 @@ app.post("/get/all/expiring", async (req, res) => {
 		}
 
 		sql =
-			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
+			"SELECT health_templates.name AS name FROM employee_health_qualifications INNER JOIN health_templates ON template_id = health_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days' ORDER BY name ASC";
 		var health_query = await database.query(sql, [req.session.user.user_id], true);
 		if (health_query != -1) {
 			health_query.rows.forEach((row) => {
@@ -173,7 +173,7 @@ app.post("/get/all/expiring", async (req, res) => {
 		}
 
 		sql =
-			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days'";
+			"SELECT certification_templates.name AS name FROM employee_certifications INNER JOIN certification_templates ON template_id = certification_templates.id WHERE user_id = $1 AND expiration_date > NOW() AND expiration_date < NOW() + INTERVAL '90 days' ORDER BY name ASC";
 		var certification_query = await database.query(sql, [req.session.user.user_id], true);
 		if (certification_query != -1) {
 			certification_query.rows.forEach((row) => {

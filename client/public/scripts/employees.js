@@ -371,3 +371,11 @@ function clearICCForm() {
 	}
 	showiccs();
 }
+var toggled = false;
+function selectAll() {
+	toggled = !toggled;
+	var children = $("#icc_table_body").children();
+	for (var i = 0; i < children.length; i++) {
+		$(`#email${i}`).prop("checked", toggled);
+	}
+}
