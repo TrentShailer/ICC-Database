@@ -17,12 +17,6 @@ const utility = require("./app/utility/utility.js");
 const port = 3002;
 const hostname = "192.168.9.101";
 
-// TODO Help popovers EVERYWHERE
-// TODO toggle add for all employees
-// TODO Calender for dates
-
-// TODO Possible change login into 365
-
 app.set("view engine", "ejs");
 app.set("views", utility.view);
 app.set("view options", { layout: false });

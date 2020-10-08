@@ -177,10 +177,8 @@
 								<div class="form-row" id="training_group">
 									<div class="form-group col">
 										<label for="training_date">Training Date</label>
-										<input type="text" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="form-control" id="training_date" />
+										<input type="text" class="form-control" data-provide="datepicker" data-date-format="yyyy-mm-dd" id="training_date" />
 										<div class="invalid-feedback">Invalid date</div>
-										<small>Format: yyyy-mm-dd</small>
-										<br />
 										<small>Leave blank to let employees know that they need to complete it</small>
 									</div>
 								</div>
@@ -288,6 +286,8 @@
 			integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
 			crossorigin="anonymous"
 		></script>
-		<script src="../scripts/employees.js"></script>
+		<link href="/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+		<script src="/scripts/bootstrap-datepicker.min.js" type="text/javascript"></script>
+		<script src="/scripts/employees.js"></script>
 	</body>
 </html>
