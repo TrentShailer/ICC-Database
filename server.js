@@ -90,7 +90,7 @@ server.listen(port, hostname, async () => {
 		await CreateAccount("admin", "admin@admin.com", "Admin", "Account");
 	}
 });
-// TODO consistance deletion warnings - this cannot be undone
+
 async function CreateAccount(password, email, first_name, last_name) {
 	//! Use this to add a admin account
 	var user_id = security.GetUUID();
