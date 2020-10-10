@@ -7,14 +7,30 @@ const pool = new Pool({
 	password: "postgres",
 	port: "6543",
 });
-
+async function Connect() {
+	return new Promise(async (resolve) => {
+		var tries = 20;
+		while (tries) {
+			try {
+				const client = await pool.connect();
+				resolve(client);
+				break;
+			} catch (err) {
+				tries--;
+				console.log(`Failed to conenct to database, ${tries} tries remaining`);
+				await new Promise((res) => setTimeout(res, 7500));
+			}
+		}
+		resolve(-1);
+	});
+}
 query = async (sql, params, logging) => {
 	var t = process.hrtime();
-	const client = await pool.connect().catch((err) => {
-		console.error("Error connecting to pool");
-		console.error(err.stack);
-		return -3;
-	});
+	const client = await Connect();
+	if (client == -1) {
+		console.error("Failed to connect to database");
+		return;
+	}
 	try {
 		const res = await client.query(sql, params);
 		t = process.hrtime(t);

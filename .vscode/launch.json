@@ -7,10 +7,16 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"name": "Test Program",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "${workspaceFolder}\\server.js",
+			"args": ["3000"]
+		},
+		{
+			"type": "node",
+			"request": "launch",
 			"name": "Launch Program",
-			"skipFiles": [
-				"<node_internals>/**"
-			],
+			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}\\server.js"
 		}
 	]

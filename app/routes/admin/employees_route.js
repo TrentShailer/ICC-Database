@@ -249,8 +249,8 @@ function getExpirationDate(duration, training_date) {
 	var expiration_date = null;
 	if (duration && training_date) {
 		expiration_date = new Date(training_date);
-		expiration_date = expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
-		expiration_date = new Date(expiration_date).toISOString().substr(0, 10);
+		expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
+		expiration_date = formatISO(expiration_date, { representation: "date" });
 	}
 	return expiration_date;
 }

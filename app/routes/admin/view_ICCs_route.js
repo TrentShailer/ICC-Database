@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express.Router();
 const bodyParser = require("body-parser");
+var formatISO = require("date-fns/formatISO");
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 const database = require("../../utility/database.js");
@@ -57,13 +58,11 @@ app.post("/get/employee/site/iccs", urlencodedParser, async (req, res) => {
 					expired = "Yes";
 				}
 				var test = row.training_date;
-				test.setHours(test.getHours() + 12);
-				console.log(test.toISOString());
 			}
 
 			var duration = row.duration == null ? "" : row.duration;
-			var training_date = row.training_date == null ? "" : row.training_date.toISOString().substr(0, 10);
-			var expiration_date = row.expiration_date == null ? "" : row.expiration_date.toISOString().substr(0, 10);
+			var training_date = row.training_date == null ? "" : formatISO(row.training_date, { representation: "date" });
+			var expiration_date = row.expiration_date == null ? "" : formatISO(row.expiration_date, { representation: "date" });
 			table.push([row.name, training_date, duration, expiration_date, expired, row.notes, row.id]);
 		}
 		res.send({ table: table });
@@ -107,8 +106,8 @@ app.post("/get/employee/product/iccs", urlencodedParser, async (req, res) => {
 				}
 			}
 			var duration = row.duration == null ? "" : row.duration;
-			var training_date = row.training_date == null ? "" : row.training_date.toISOString().substr(0, 10);
-			var expiration_date = row.expiration_date == null ? "" : row.expiration_date.toISOString().substr(0, 10);
+			var training_date = row.training_date == null ? "" : formatISO(row.training_date, { representation: "date" });
+			var expiration_date = row.expiration_date == null ? "" : formatISO(row.expiration_date, { representation: "date" });
 			table.push([row.name, training_date, duration, expiration_date, expired, row.notes, row.id]);
 		}
 		res.send({ table: table });
@@ -151,8 +150,8 @@ app.post("/get/employee/health/iccs", urlencodedParser, async (req, res) => {
 				}
 			}
 			var duration = row.duration == null ? "" : row.duration;
-			var training_date = row.training_date == null ? "" : row.training_date.toISOString().substr(0, 10);
-			var expiration_date = row.expiration_date == null ? "" : row.expiration_date.toISOString().substr(0, 10);
+			var training_date = row.training_date == null ? "" : formatISO(row.training_date, { representation: "date" });
+			var expiration_date = row.expiration_date == null ? "" : formatISO(row.expiration_date, { representation: "date" });
 			var unit_standard = row.unit_standard == null ? "" : row.unit_standard;
 			table.push([row.name, training_date, duration, expiration_date, expired, unit_standard, row.notes, row.id]);
 		}
@@ -196,8 +195,8 @@ app.post("/get/employee/certification/iccs", urlencodedParser, async (req, res) 
 				}
 			}
 			var duration = row.duration == null ? "" : row.duration;
-			var training_date = row.training_date == null ? "" : row.training_date.toISOString().substr(0, 10);
-			var expiration_date = row.expiration_date == null ? "" : row.expiration_date.toISOString().substr(0, 10);
+			var training_date = row.training_date == null ? "" : formatISO(row.training_date, { representation: "date" });
+			var expiration_date = row.expiration_date == null ? "" : formatISO(row.expiration_date, { representation: "date" });
 			table.push([row.name, training_date, duration, expiration_date, expired, row.notes, row.id]);
 		}
 		res.send({ table: table });
@@ -343,7 +342,7 @@ async function getICCData(req, res, sql) {
 		req.session.error = "Failed to fetch ICC from server";
 		return res.send({ redirect: "/admin/employees/view" });
 	}
-	res.send({ training_date: query.rows[0].training_date == null ? "" : new Date(query.rows[0].training_date).toISOString().substr(0, 10) });
+	res.send({ training_date: query.rows[0].training_date == null ? "" : formatISO(query.rows[0].training_date, { representation: "date" }) });
 }
 
 app.post("/edit/employee/site/icc", urlencodedParser, async (req, res) => {
@@ -433,8 +432,8 @@ function getExpirationDate(duration, training_date) {
 	var expiration_date = null;
 	if (duration && training_date) {
 		expiration_date = new Date(training_date);
-		expiration_date = expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
-		expiration_date = new Date(expiration_date).toISOString().substr(0, 10);
+		expiration_date.setMonth(expiration_date.getMonth() + Number(duration));
+		expiration_date = formatISO(expiration_date, { representation: "date" });
 	}
 	return expiration_date;
 }

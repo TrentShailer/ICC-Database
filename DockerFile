@@ -6,5 +6,6 @@ COPY . .
 EXPOSE 4000
 CMD node server.js
 
-# docker build -t trentshailer/icc_database:<version num>
+# docker build -t trentshailer/icc_database:<version num> .
 # docker tag trentshailer/icc_database:<version num> trentshailer/icc_database:latest
+# docker-compose up -d
