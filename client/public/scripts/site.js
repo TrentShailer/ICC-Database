@@ -18,8 +18,10 @@ $.post("/get/employee/site/iccs", { self: true }, (data) => {
 		<td>${entry[0]}</td>
 		<td>${entry[1]}</td>
 		<td>${entry[2]}</td>
+
 		<td>${entry[3]}</td>
-		<td>${entry[4]}</td>
+		<td>${entry[4] == "Yes" ? "<p style='color: red'><b>" + entry[4] + "</b></p>" : entry[4]}</td>
+
 		<td>${entry[5].replace(/(?:\r\n|\r|\n)/g, "<br>")}</td>
 		</tr>`;
 		$("#table_body").append(html);

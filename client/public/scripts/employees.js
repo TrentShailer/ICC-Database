@@ -79,7 +79,7 @@ function GetDataFromServer() {
 					<td>${employee.email}</td>
 					<td>${employee.notes.replace(/(?:\r\n|\r|\n)/g, "<br>")}</td>
 					<td><button class="btn btn-outline-info" onclick="view('${employee.email}')">View ICCs</button></td>
-					<td><button class="btn btn-outline-secondary" onclick="recoverpassword('${employee.email}')">Recover Password</button></td>
+					<td><button class="btn btn-outline-secondary" onclick="showRecover('${employee.email}')">Recover Password</button></td>
 					<td><button class="btn btn-outline-info" onclick="edit('${employee.email}')">Edit Employee</button></td>
 					<td><button class="btn btn-outline-danger" onclick="deleteEmployee('${employee.email}')">Delete Employee</button></td>
 				</tr>`;
@@ -204,16 +204,19 @@ function filter() {
 		}
 	}
 }
-
-function recoverpassword(email) {
-	$.post("/recover", { email }, (data) => {
+var emailToRecover;
+function recoverpassword() {
+	$.post("/recover", { email: emailToRecover }, (data) => {
 		if (data.redirect) {
 			window.location.href = data.redirect;
 		}
 		$("#success").modal("show");
 	});
 }
-
+function showRecover(email) {
+	emailToRecover = email;
+	$("#recoverconfirm").modal("show");
+}
 var emailToDelete = "";
 function deleteEmployee(email) {
 	emailToDelete = email;

@@ -9,6 +9,16 @@
 			"previewLimit": 50,
 			"server": "localhost",
 			"username": "postgres"
+		},
+		{
+			"previewLimit": 50,
+			"server": "192.168.9.101",
+			"port": 6543,
+			"driver": "PostgreSQL",
+			"name": "test",
+			"database": "icc_database",
+			"username": "postgres",
+			"password": "postgres"
 		}
 	],
 	"eslint.enable": false

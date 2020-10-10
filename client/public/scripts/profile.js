@@ -42,7 +42,7 @@ $.post("/get/all/required", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card bg-light border-primary" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-primary" style="width: 20rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Completion Required</h5>
 						<hr />
@@ -78,7 +78,7 @@ $.post("/get/all/expired", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card bg-light border-danger" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-danger" style="width: 20rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Expired</h5>
 						<hr />
@@ -114,7 +114,7 @@ $.post("/get/all/expiring", (data) => {
 		result[i].forEach((name) => {
 			var html = `
 			<div class="child">
-				<div class="card bg-light border-warning" style="width: 18rem; border-width: 2px">
+				<div class="card bg-light border-warning" style="width: 20rem; border-width: 2px">
 					<div class="card-body">
 						<h5 class="card-title">ICC Expiring Soon</h5>
 						<hr />

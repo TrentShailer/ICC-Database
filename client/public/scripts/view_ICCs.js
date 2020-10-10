@@ -189,8 +189,9 @@ function view(table) {
 			var html = `<tr>`;
 			for (var j = 0; j < colNum; j++) {
 				var entryToAdd = entry[j];
+				if (entry[j] == "Yes") entryToAdd = `<p style="color: red"><b>${entry[j]}</b></p>`;
 				if (j == entry.length - 2) entryToAdd = entryToAdd.replace(/(?:\r\n|\r|\n)/g, "<br>");
-				html += `<td>${entryToAdd}</td>`;
+				html += `<td >${entryToAdd}</td>`;
 			}
 			html += `<td><button class="btn btn-outline-info" onclick="edit(${entry[colNum]})">Edit</button></td>`;
 			html += `<td><button class="btn btn-outline-danger" onclick="remove(${entry[colNum]})">Delete</button></td>`;

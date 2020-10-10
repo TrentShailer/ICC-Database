@@ -14,8 +14,8 @@ const utility = require("./app/utility/utility.js");
 //* Setup
 //* -------------------
 
-const port = 3002;
-const hostname = "192.168.9.101";
+const port = 4000;
+const hostname = "0.0.0.0";
 
 app.set("view engine", "ejs");
 app.set("views", utility.view);
@@ -84,13 +84,15 @@ app.post("*", function (req, res) {
 //* -------------------
 
 server.listen(port, hostname, async () => {
-	console.log(`Listening at http://${hostname}:${port}`);
+	console.log(`Server is running at port: ${port}!`);
+	var adminQuery = await database.query("SELECT user_id FROM users WHERE name = 'Admin'", [], true);
+	if (adminQuery < 0) {
+		await CreateAccount("admin", "admin@admin.com", "Admin", "Account");
+	}
 });
-
-// require("./server.js").CreateAccount("admin", "admin@admin.com", "Admin", "");
+// TODO consistance deletion warnings - this cannot be undone
 async function CreateAccount(password, email, first_name, last_name) {
 	//! Use this to add a admin account
-	// TODO Convert this to an actual user
 	var user_id = security.GetUUID();
 	var password = security.Encrypt(password);
 	var email = email;

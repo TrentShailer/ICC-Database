@@ -1,0 +1,21 @@
+services:
+  # Database container
+  db:
+    image: postgres:13.0-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: icc_database
+    # Where data is stored - persistance
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "6543:5432"
+  # node container
+  web:
+    image: trentshailer/icc_database:latest
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+  # docker-compose up -d

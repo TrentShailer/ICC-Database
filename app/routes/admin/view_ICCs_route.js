@@ -56,7 +56,11 @@ app.post("/get/employee/site/iccs", urlencodedParser, async (req, res) => {
 				if (new Date(row.expiration_date) < today) {
 					expired = "Yes";
 				}
+				var test = row.training_date;
+				test.setHours(test.getHours() + 12);
+				console.log(test.toISOString());
 			}
+
 			var duration = row.duration == null ? "" : row.duration;
 			var training_date = row.training_date == null ? "" : row.training_date.toISOString().substr(0, 10);
 			var expiration_date = row.expiration_date == null ? "" : row.expiration_date.toISOString().substr(0, 10);

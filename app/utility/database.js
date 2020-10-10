@@ -2,10 +2,10 @@ const { Pool, Client } = require("pg");
 
 const pool = new Pool({
 	user: "postgres",
-	host: "localhost",
+	host: "192.168.9.101",
 	database: "icc_database",
-	password: "admin",
-	port: "5432",
+	password: "postgres",
+	port: "6543",
 });
 
 query = async (sql, params, logging) => {
