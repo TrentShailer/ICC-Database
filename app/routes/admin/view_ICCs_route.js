@@ -298,7 +298,7 @@ app.post("/delete/employee/qualification/icc", urlencodedParser, async (req, res
 
 app.post("/get/employee/site/data", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT training_date FROM employee_site_inductions WHERE id = $1";
+		var sql = "SELECT training_date, template_id FROM employee_site_inductions WHERE id = $1";
 		getICCData(req, res, sql);
 	} else {
 		req.session.error = "You do not have permission to view this page";
@@ -308,7 +308,7 @@ app.post("/get/employee/site/data", urlencodedParser, async (req, res) => {
 
 app.post("/get/employee/product/data", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT training_date FROM employee_product_certifications WHERE id = $1";
+		var sql = "SELECT training_date, template_id FROM employee_product_certifications WHERE id = $1";
 		getICCData(req, res, sql);
 	} else {
 		req.session.error = "You do not have permission to view this page";
@@ -318,7 +318,7 @@ app.post("/get/employee/product/data", urlencodedParser, async (req, res) => {
 
 app.post("/get/employee/health/data", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT training_date FROM employee_health_qualifications WHERE id = $1";
+		var sql = "SELECT training_date, template_id FROM employee_health_qualifications WHERE id = $1";
 		getICCData(req, res, sql);
 	} else {
 		req.session.error = "You do not have permission to view this page";
@@ -328,7 +328,7 @@ app.post("/get/employee/health/data", urlencodedParser, async (req, res) => {
 
 app.post("/get/employee/certification/data", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access == true) {
-		var sql = "SELECT training_date FROM employee_certifications WHERE id = $1";
+		var sql = "SELECT training_date, template_id FROM employee_certifications WHERE id = $1";
 		getICCData(req, res, sql);
 	} else {
 		req.session.error = "You do not have permission to view this page";
@@ -342,7 +342,10 @@ async function getICCData(req, res, sql) {
 		req.session.error = "Failed to fetch ICC from server";
 		return res.send({ redirect: "/admin/employees/view" });
 	}
-	res.send({ training_date: query.rows[0].training_date == null ? "" : formatISO(query.rows[0].training_date, { representation: "date" }) });
+	res.send({
+		training_date: query.rows[0].training_date == null ? "" : formatISO(query.rows[0].training_date, { representation: "date" }),
+		template_id: query.rows[0].template_id,
+	});
 }
 
 app.post("/edit/employee/site/icc", urlencodedParser, async (req, res) => {

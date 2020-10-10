@@ -625,7 +625,14 @@ app.post("/adduser", urlencodedParser, async (req, res) => {
 			req.session.error = "Error adding data to database";
 			return res.send({ redirect: "/admin" });
 		}
-		mailer.SendMail(email, "ASGL ICC Database login", `<h3>Email: ${email}</h3><br><h3>Password: ${password}</h3>`);
+		mailer.SendMail(
+			email,
+			"ASGL ICC Database login",
+			`<h3>Advanced Security Inductions, Certifications, and Competencies Database Access</h3>
+			<br />
+			<h3>Username: ${email}</h3>
+			<h3>New Password: ${password}</h3>`
+		);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";

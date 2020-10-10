@@ -2,6 +2,7 @@ const express = require("express");
 const app = express.Router();
 const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
+var formatISO = require("date-fns/formatISO");
 
 const database = require("../../utility/database.js");
 const security = require("../../utility/security.js");
@@ -75,7 +76,14 @@ app.post("/recover", urlencodedParser, async (req, res) => {
 		var encryped_password = password.encryped_password;
 		password = password.password;
 		await database.query("UPDATE users SET password = $1 WHERE email = $2", [encryped_password, req.body.email], true);
-		mailer.SendMail(req.body.email, "ASGL ICC Database Password Reset", `<h3>New Password: ${password}</h3>`);
+		mailer.SendMail(
+			req.body.email,
+			"ASGL ICC Database Password Reset",
+			`<h3>Advanced Security Inductions, Certifications, and Competencies Database Access</h3>
+			<br />
+			<h3>Username: ${req.body.email}</h3>
+			<h3>New Password: ${password}</h3>`
+		);
 		res.sendStatus(200);
 	} else {
 		req.session.error = "You do not have permission to view this page";

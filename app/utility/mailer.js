@@ -12,7 +12,7 @@ let transporter = nodemailer.createTransport({
 
 async function SendMail(to, subject, html) {
 	let info = await transporter.sendMail({
-		from: "Login Example <trent_smtp@xtra.co.nz>",
+		from: "ASGL ICC Database Admin <trent_smtp@xtra.co.nz>",
 		to: to,
 		subject: subject,
 		html: html,

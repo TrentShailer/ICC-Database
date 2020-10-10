@@ -91,7 +91,7 @@ server.listen(port, hostname, async () => {
 	console.log(`Server is running at port: ${port}!`);
 	var adminQuery = await database.query("SELECT user_id FROM users WHERE first_name = 'Admin'", [], true);
 	if (adminQuery < 0) {
-		await CreateAccount("admin", "admin@admin.com", "Admin", "Account");
+		await CreateAccount("eyeseesea", "admin@icc.asgl.co.nz", "Admin", "Account");
 	}
 });
 

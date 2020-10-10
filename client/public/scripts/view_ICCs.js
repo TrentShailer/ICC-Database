@@ -78,25 +78,26 @@ function edit(id) {
 			var training_date = data.training_date;
 			$("#training_group").show();
 			$("#edit_training_date").val(training_date);
+			var template_id = data.template_id;
+			$.post(`/get/${type}/templates`, (data) => {
+				if (data.redirect) window.location.href = data.redirect;
+				var templates = data.templates;
+				templates.forEach((template) => {
+					if (template.id == template_id) {
+						var html = `<option selected id=${template.id}>${template.name}</option>`;
+					} else {
+						var html = `<option id=${template.id}>${template.name}</option>`;
+					}
+
+					$("#edit_icc").append(html);
+				});
+				$("#edit_modal").modal("show");
+			});
 		});
 	} else {
 		$("#training_group").hide();
 		$("#edit_training_date").val("");
 	}
-	$.post(`/get/${type}/templates`, (data) => {
-		if (data.redirect) window.location.href = data.redirect;
-		var templates = data.templates;
-		templates.forEach((template) => {
-			if (template.id == id) {
-				var html = `<option selected id=${template.id}>${template.name}</option>`;
-			} else {
-				var html = `<option id=${template.id}>${template.name}</option>`;
-			}
-
-			$("#edit_icc").append(html);
-		});
-		$("#edit_modal").modal("show");
-	});
 }
 
 function view(table) {
