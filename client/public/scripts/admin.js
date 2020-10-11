@@ -337,3 +337,7 @@ function filter() {
 		}
 	}
 }
+
+function openreport() {
+	$.post("/generate/type1/report", { regions: ["Palmerston North", "New Plymouth", "Napier"] }, (data) => {});
+}

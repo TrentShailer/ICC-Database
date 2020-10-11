@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "node server.js",
+		"dev": "node server.js 3000",
 		"start": "node server.js"
 	},
 	"author": "",
@@ -17,6 +17,7 @@
 		"date-fns": "^2.16.1",
 		"ejs": "^3.1.5",
 		"express": "^4.17.1",
+		"html5-to-pdf": "^4.0.1",
 		"nodemailer": "^6.4.11",
 		"pg": "^8.3.3",
 		"uuid": "^8.3.0"

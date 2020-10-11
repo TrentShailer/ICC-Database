@@ -57,7 +57,8 @@ app.post("/get/employee/site/iccs", urlencodedParser, async (req, res) => {
 				if (new Date(row.expiration_date) < today) {
 					expired = "Yes";
 				}
-				var test = row.training_date;
+			} else {
+				expired = "Yes";
 			}
 
 			var duration = row.duration == null ? "" : row.duration;
@@ -330,6 +331,23 @@ app.post("/get/employee/certification/data", urlencodedParser, async (req, res) 
 	if (req.session.user && req.session.user.admin_access == true) {
 		var sql = "SELECT training_date, template_id FROM employee_certifications WHERE id = $1";
 		getICCData(req, res, sql);
+	} else {
+		req.session.error = "You do not have permission to view this page";
+		res.redirect("/profile");
+	}
+});
+
+app.post("/get/employee/qualification/data", urlencodedParser, async (req, res) => {
+	if (req.session.user && req.session.user.admin_access == true) {
+		var sql = "SELECT template_id FROM employee_qualifications WHERE id = $1";
+		var query = await database.query(sql, [req.body.id], true);
+		if (query < 0) {
+			req.session.error = "Failed to fetch ICC from server";
+			return res.send({ redirect: "/admin/employees/view" });
+		}
+		res.send({
+			template_id: query.rows[0].template_id,
+		});
 	} else {
 		req.session.error = "You do not have permission to view this page";
 		res.redirect("/profile");

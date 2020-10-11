@@ -59,6 +59,8 @@ app.use(require("./app/routes/admin/admin_route.js"));
 app.use(require("./app/routes/admin/employees_route.js"));
 app.use(require("./app/routes/admin/view_ICCs_route.js"));
 
+app.use(require("./app/utility/reports/region_employee_report.js"));
+
 app.get("/", async (req, res) => {
 	res.redirect("/login");
 });

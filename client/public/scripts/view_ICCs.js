@@ -97,6 +97,24 @@ function edit(id) {
 	} else {
 		$("#training_group").hide();
 		$("#edit_training_date").val("");
+		$.post(`/get/employee/${type}/data`, { id: id }, (data) => {
+			if (data.redirect) window.location.href = data.redirect;
+			var template_id = data.template_id;
+			$.post(`/get/${type}/templates`, (data) => {
+				if (data.redirect) window.location.href = data.redirect;
+				var templates = data.templates;
+				templates.forEach((template) => {
+					if (template.id == template_id) {
+						var html = `<option selected id=${template.id}>${template.name}</option>`;
+					} else {
+						var html = `<option id=${template.id}>${template.name}</option>`;
+					}
+
+					$("#edit_icc").append(html);
+				});
+				$("#edit_modal").modal("show");
+			});
+		});
 	}
 }
 
@@ -192,6 +210,7 @@ function view(table) {
 				var entryToAdd = entry[j];
 				if (entry[j] == "Yes") entryToAdd = `<p style="color: red"><b>${entry[j]}</b></p>`;
 				if (j == entry.length - 2) entryToAdd = entryToAdd.replace(/(?:\r\n|\r|\n)/g, "<br>");
+
 				html += `<td >${entryToAdd}</td>`;
 			}
 			html += `<td><button class="btn btn-outline-info" onclick="edit(${entry[colNum]})">Edit</button></td>`;
