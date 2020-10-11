@@ -368,6 +368,7 @@ function clearICCForm() {
 	$("#type").val("Select ICC Type");
 	$("#icc").val("Select ICC");
 	$("#training_date").val("");
+	$("#addAll").prop("checked", false);
 	var children = $("#icc_table_body").children();
 	for (var i = 0; i < children.length; i++) {
 		$(`#email${i}`).prop("checked", false);

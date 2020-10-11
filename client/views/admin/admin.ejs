@@ -272,8 +272,27 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="loading_modal" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header text-success">
+						<h5 class="modal-title">Your report is being generated</h5>
+						<button type="button" class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<h6>Your report is currently being generated and will be emailed to you when it is finished</h6>
+					</div>
+					<div class="modal-footer">
+						<button style="width: 10rem" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="modal fade" id="report_modal" tabindex="-1" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-md">
+			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title">Generate report</h5>
@@ -286,12 +305,35 @@
 							<small>This will generate a report then email it to you</small>
 							<div class="form-row">
 								<div class="form-group col">
-									<label for="report_region">Region</label>
-									<select class="form-control custom-select" id="report_region">
-										<option selected>Select Region</option>
+									<label for="report_type">Report Type</label>
+									<select class="form-control custom-select" onchange="updateInfo()" id="report_type">
+										<option selected>Select Report Type</option>
+										<option>Expiring / Expired Region Report Sorted by Employee</option>
+										<option>Expiring / Expired Region Report Sorted by ICC</option>
+										<option>Expired Region Report Sorted by Employee</option>
+										<option>Qualification Report Sorted by Employee</option>
 									</select>
+									<small id="info"></small>
 									<div class="invalid-feedback">This field is required</div>
 								</div>
+							</div>
+							<div id="forward_group" style="display: none" class="form-row">
+								<div class="form-group col">
+									<label for="report_forward">Number of days from today for an ICC to be expiring</label>
+									<input type="number" class="form-control" id="report_forward" />
+									<div class="invalid-feedback">This field is required</div>
+								</div>
+							</div>
+							<div class="container d-flex justify-content-center pt-3">
+								<table id="table" class="table table-striped">
+									<thead class="thead">
+										<tr>
+											<th>Region</th>
+											<th><input type="checkbox" class="form-check-input" id="addAll" onclick="selectAll()" />Select Region</th>
+										</tr>
+									</thead>
+									<tbody id="report_table_body"></tbody>
+								</table>
 							</div>
 						</div>
 						<div class="modal-footer">

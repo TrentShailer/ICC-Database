@@ -14,16 +14,15 @@ const mailer = require("../mailer.js");
 const classes = require("../classes.js");
 const utility = require("../utility.js");
 
-app.post("/generate/type1/report", urlencodedParser, async (req, res) => {
+app.post("/generate/type3/report", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access) {
-		var forwardPeriod = req.body.forwardPeriod;
 		var start = process.hrtime();
 		var now = new Date();
 
 		var outputPath = path.join(__dirname, "output");
-		var outputName = `Region Employee Report ${format(now, "yyyy-MM-dd hh-mm a")}.pdf`;
+		var outputName = `Expired Report ${format(now, "yyyy-MM-dd hh-mm a")}.pdf`;
 
-		var buffer = await GenerateBuffer(req, forwardPeriod);
+		var buffer = await GenerateBuffer(req);
 
 		fs.closeSync(fs.openSync(path.join(outputPath, outputName), "w"));
 
@@ -42,8 +41,8 @@ app.post("/generate/type1/report", urlencodedParser, async (req, res) => {
 		var end = process.hrtime(start);
 		var time = Math.round((end[0] * 1000000000 + end[1]) / 1000000) + "ms";
 
-		console.log(`Region_employee report generated in ${time}`);
-		await mailer.SendReport(req.session.user.email, "Region Employee Report", path.join(outputPath, outputName));
+		console.log(`Expired report generated in ${time}`);
+		await mailer.SendReport(req.session.user.email, "Expired Report", path.join(outputPath, outputName));
 		fs.unlink(path.join(outputPath, outputName), (err) => {
 			if (err) {
 				throw err;
@@ -56,7 +55,7 @@ app.post("/generate/type1/report", urlencodedParser, async (req, res) => {
 	}
 });
 
-async function GenerateBuffer(req, forwardPeriod) {
+async function GenerateBuffer(req) {
 	var buffer = `
 	<html>
 		<head>
@@ -64,21 +63,21 @@ async function GenerateBuffer(req, forwardPeriod) {
 		</head>
 		<body>
 			<div class="center">
-				<p class="header" id="title">Expiring / Expired ICCs Report</p>
+				<p class="header" id="title">Expired ICCs Report</p>
 			</div>
 			<div class="flex justify-between" style="margin-top: -15px">
 				<div>
 					<p class="info">Report Generated on ${formatISO(new Date(), { representation: "date" })}</p>
 				</div>
 				<div>
-					<p class="info">Report Type: Region/Employee</p>
+					<p class="info">Report Type: Expired</p>
 				</div>
 			</div>
 			<hr class="thick divider" />
 			<div id="template-body">`;
 	for (var i = 0; i < req.body.regions.length; i++) {
 		var regionQuery = await database.query("SELECT id FROM regions WHERE name = $1", [req.body.regions[i]], true);
-		var result = await GenerateRegion(regionQuery.rows[0].id, req.body.regions[i], forwardPeriod);
+		var result = await GenerateRegion(regionQuery.rows[0].id, req.body.regions[i]);
 		if (result != "") {
 			buffer += result;
 		} else {
@@ -99,7 +98,7 @@ async function GenerateBuffer(req, forwardPeriod) {
 	return buffer;
 }
 
-async function GenerateRegion(region_id, region_name, forwardPeriod) {
+async function GenerateRegion(region_id, region_name) {
 	var flag = false;
 	var userQuery = await database.query("SELECT user_id, first_name, last_name FROM users WHERE region_id = $1 ORDER BY first_name ASC", [region_id]);
 	var html = `
@@ -121,7 +120,7 @@ async function GenerateRegion(region_id, region_name, forwardPeriod) {
 	for (var i = 0; i < userQuery.rows.length; i++) {
 		var user_id = userQuery.rows[i].user_id;
 		var name = `${userQuery.rows[i].first_name} ${userQuery.rows[i].last_name}`;
-		var rows = await GetICCs(user_id, forwardPeriod);
+		var rows = await GetICCs(user_id);
 		for (var j = 0; j < rows.length; j++) {
 			flag = true;
 			var row = rows[j];
@@ -146,7 +145,7 @@ async function GenerateRegion(region_id, region_name, forwardPeriod) {
 	}
 }
 
-async function GetICCs(user_id, forwardPeriod) {
+async function GetICCs(user_id) {
 	var rows = [];
 	var siteQuery = await database.query(
 		"SELECT site_templates.name AS name, expiration_date FROM employee_site_inductions INNER JOIN site_templates ON site_templates.id = template_id WHERE user_id = $1 ORDER BY expiration_date ASC",
@@ -155,7 +154,7 @@ async function GetICCs(user_id, forwardPeriod) {
 	if (!(siteQuery < 0)) {
 		for (var i = 0; i < siteQuery.rows.length; i++) {
 			var dataRow = siteQuery.rows[i];
-			if (validateRow(dataRow, forwardPeriod)) {
+			if (validateRow(dataRow)) {
 				var expiration_date = dataRow.expiration_date;
 				if (expiration_date != "" && expiration_date != null) {
 					expiration_date = formatISO(dataRow.expiration_date, { representation: "date" });
@@ -174,7 +173,7 @@ async function GetICCs(user_id, forwardPeriod) {
 	if (!(productQuery < 0)) {
 		for (var i = 0; i < productQuery.rows.length; i++) {
 			var dataRow = productQuery.rows[i];
-			if (validateRow(dataRow, forwardPeriod)) {
+			if (validateRow(dataRow)) {
 				var expiration_date = dataRow.expiration_date;
 				if (expiration_date != "" && expiration_date != null) {
 					expiration_date = formatISO(dataRow.expiration_date, { representation: "date" });
@@ -193,7 +192,7 @@ async function GetICCs(user_id, forwardPeriod) {
 	if (!(healthQuery < 0)) {
 		for (var i = 0; i < healthQuery.rows.length; i++) {
 			var dataRow = healthQuery.rows[i];
-			if (validateRow(dataRow, forwardPeriod)) {
+			if (validateRow(dataRow)) {
 				var expiration_date = dataRow.expiration_date;
 				if (expiration_date != "" && expiration_date != null) {
 					expiration_date = formatISO(dataRow.expiration_date, { representation: "date" });
@@ -212,7 +211,7 @@ async function GetICCs(user_id, forwardPeriod) {
 	if (!(certificationQuery < 0)) {
 		for (var i = 0; i < certificationQuery.rows.length; i++) {
 			var dataRow = certificationQuery.rows[i];
-			if (validateRow(dataRow, forwardPeriod)) {
+			if (validateRow(dataRow)) {
 				var expiration_date = dataRow.expiration_date;
 				if (expiration_date != "" && expiration_date != null) {
 					expiration_date = formatISO(dataRow.expiration_date, { representation: "date" });
@@ -229,17 +228,12 @@ async function GetICCs(user_id, forwardPeriod) {
 	return rows;
 }
 
-function validateRow(row, forwardPeriod) {
+function validateRow(row) {
 	var expiration_date = row.expiration_date;
-	if (expiration_date == "" || expiration_date == null) {
-		return true;
-	} else {
-		var now = new Date();
-		var forwardTime = new Date();
-		forwardTime.setDate(forwardTime.getDate() + forwardPeriod);
-		if (expiration_date < now) return true;
-		if (expiration_date > now && expiration_date < forwardTime) return true;
-	}
+
+	var now = new Date();
+	if (expiration_date < now) return true;
+
 	return false;
 }
 

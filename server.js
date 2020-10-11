@@ -60,6 +60,9 @@ app.use(require("./app/routes/admin/employees_route.js"));
 app.use(require("./app/routes/admin/view_ICCs_route.js"));
 
 app.use(require("./app/utility/reports/region_employee_report.js"));
+app.use(require("./app/utility/reports/region_induction_report.js"));
+app.use(require("./app/utility/reports/expired_report.js"));
+app.use(require("./app/utility/reports/qualification_report.js"));
 
 app.get("/", async (req, res) => {
 	res.redirect("/login");

@@ -26,6 +26,7 @@ app.post("/get/regions", async (req, res) => {
 		var result = await database.query(sql, [], true);
 
 		var names = [];
+		var ids = [];
 		if (result != -1 && result != -2 && result != -3) {
 			result.rows.forEach((row) => {
 				var name = row.name;
@@ -631,7 +632,7 @@ app.post("/adduser", urlencodedParser, async (req, res) => {
 			`<h3>Advanced Security Inductions, Certifications, and Competencies Database Access</h3>
 			<br />
 			<h3>Username: ${email}</h3>
-			<h3>New Password: ${password}</h3>`
+			<h3>Password: ${password}</h3>`
 		);
 		res.sendStatus(200);
 	} else {

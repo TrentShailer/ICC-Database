@@ -339,5 +339,115 @@ function filter() {
 }
 
 function openreport() {
-	$.post("/generate/type1/report", { regions: ["Palmerston North", "New Plymouth", "Napier"] }, (data) => {});
+	$("#report_table_body").empty();
+	$.post("/get/regions", (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		var regions = data.names;
+		for (var i = 0; i < regions.length; i++) {
+			var html = `
+			<tr>
+				<td>${regions[i]}</td>
+				<td>
+					<div class="form-check">
+						<input id="region${i}" data-name="${regions[i]}" style="width: 1rem; height: 1rem" class="form-check-input" type="checkbox" />
+					</div>
+				</td>
+			</tr>
+			`;
+			$("#report_table_body").append(html);
+		}
+	});
+	$("#report_modal").modal("show");
+}
+$("#generate_report_form").submit((e) => {
+	e.preventDefault();
+	var error = false;
+	$("#report_type").removeClass("is-invalid");
+	$("#report_forward").removeClass("is-invalid");
+	if ($("#report_type").val() == "Select Report Type") {
+		$("#report_type").addClass("is-invalid");
+		error = true;
+	}
+	if ($("#forward_group").css("display") != "none") {
+		if ($("#report_forward").val() < 0 || $("#report_forward").val() > 100 * 12 * 30 || $("#report_forward").val() == "") {
+			$("#report_forward").addClass("is-invalid");
+			error = true;
+		}
+	}
+
+	if (error) {
+		return;
+	}
+	var regions = [];
+	var children = $("#report_table_body").children();
+	for (var i = 0; i < children.length; i++) {
+		var checked = $(`#region${i}`).is(":checked") ? true : false;
+		if (checked) {
+			var region = $(`#region${i}`).data().name;
+			regions.push(region);
+		}
+	}
+	if (regions.length == 0) return;
+	$("#report_modal").modal("hide");
+	$("#loading_modal").modal("show");
+	var url = "";
+	switch ($("#report_type").val()) {
+		case "Expiring / Expired Region Report Sorted by Employee":
+			url = "/generate/type1/report";
+			break;
+		case "Expiring / Expired Region Report Sorted by ICC":
+			url = "/generate/type2/report";
+			break;
+		case "Expired Region Report Sorted by Employee":
+			url = "/generate/type3/report";
+			break;
+		case "Qualification Report Sorted by Employee":
+			url = "/generate/type4/report";
+			break;
+	}
+
+	$.post(url, { regions: regions, forwardPeriod: $("#report_forward").val() }, (data) => {
+		if (data.redirect) window.location.href = data.redirect;
+		$("#loading_modal").modal("hide");
+		$("#success").modal("show");
+	});
+	clearReportForm();
+});
+function updateInfo() {
+	switch ($("#report_type").val()) {
+		case "Expiring / Expired Region Report Sorted by Employee":
+			$("#info").text("This report will find all the ICCs that are expiring or expired and sort them per region by employee");
+			$("#forward_group").show();
+			break;
+		case "Expiring / Expired Region Report Sorted by ICC":
+			$("#info").text("This report will find all the ICCs that are expiring or expired and sort them per region by ICC name");
+			$("#forward_group").show();
+			break;
+		case "Expired Region Report Sorted by Employee":
+			$("#info").text("This report will find all the ICCs that are expired and sort them per region by employee");
+			$("#forward_group").hide();
+			break;
+		case "Qualification Report Sorted by Employee":
+			$("#info").text("This report will find all qualifications sort them per region by employee");
+			$("#forward_group").hide();
+			break;
+		default:
+			$("#info").text("");
+			break;
+	}
+}
+
+function clearReportForm() {
+	$("#report_forward").val("");
+	$("#report_type").val("Select Report Type");
+	$("#addAll").prop("checked", false);
+}
+
+var toggled = false;
+function selectAll() {
+	toggled = !toggled;
+	var children = $("#report_table_body").children();
+	for (var i = 0; i < children.length; i++) {
+		$(`#region${i}`).prop("checked", toggled);
+	}
 }

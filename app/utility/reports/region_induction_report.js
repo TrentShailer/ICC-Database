@@ -14,14 +14,14 @@ const mailer = require("../mailer.js");
 const classes = require("../classes.js");
 const utility = require("../utility.js");
 
-app.post("/generate/type1/report", urlencodedParser, async (req, res) => {
+app.post("/generate/type2/report", urlencodedParser, async (req, res) => {
 	if (req.session.user && req.session.user.admin_access) {
 		var forwardPeriod = req.body.forwardPeriod;
 		var start = process.hrtime();
 		var now = new Date();
 
 		var outputPath = path.join(__dirname, "output");
-		var outputName = `Region Employee Report ${format(now, "yyyy-MM-dd hh-mm a")}.pdf`;
+		var outputName = `Region Induction Report ${format(now, "yyyy-MM-dd hh-mm a")}.pdf`;
 
 		var buffer = await GenerateBuffer(req, forwardPeriod);
 
@@ -42,8 +42,8 @@ app.post("/generate/type1/report", urlencodedParser, async (req, res) => {
 		var end = process.hrtime(start);
 		var time = Math.round((end[0] * 1000000000 + end[1]) / 1000000) + "ms";
 
-		console.log(`Region_employee report generated in ${time}`);
-		await mailer.SendReport(req.session.user.email, "Region Employee Report", path.join(outputPath, outputName));
+		console.log(`Region Induction report generated in ${time}`);
+		await mailer.SendReport(req.session.user.email, "Region Induction Report", path.join(outputPath, outputName));
 		fs.unlink(path.join(outputPath, outputName), (err) => {
 			if (err) {
 				throw err;
@@ -71,7 +71,7 @@ async function GenerateBuffer(req, forwardPeriod) {
 					<p class="info">Report Generated on ${formatISO(new Date(), { representation: "date" })}</p>
 				</div>
 				<div>
-					<p class="info">Report Type: Region/Employee</p>
+					<p class="info">Report Type: Region/Induction</p>
 				</div>
 			</div>
 			<hr class="thick divider" />
@@ -118,21 +118,33 @@ async function GenerateRegion(region_id, region_name, forwardPeriod) {
 					</tr>
 				</thead>
 				<tbody>`;
+	var rows = [];
+	var names = [];
 	for (var i = 0; i < userQuery.rows.length; i++) {
 		var user_id = userQuery.rows[i].user_id;
-		var name = `${userQuery.rows[i].first_name} ${userQuery.rows[i].last_name}`;
-		var rows = await GetICCs(user_id, forwardPeriod);
-		for (var j = 0; j < rows.length; j++) {
-			flag = true;
-			var row = rows[j];
-			html += `
-			<tr>
-				<td>${name}</td>
-				<td>${row.icc}</td>
-				<td>${row.expiration_date}</td>
-			</tr>`;
+		names.push(`${userQuery.rows[i].first_name} ${userQuery.rows[i].last_name}`);
+		var rows = rows.concat(await GetICCs(user_id, forwardPeriod));
+	}
+	rows.sort((a, b) => {
+		var x = a.icc.toLowerCase();
+		var y = b.icc.toLowerCase();
+		if (x < y) {
+			return -1;
 		}
-		html += `<tr><td></td></tr>`;
+		if (x > y) {
+			return 1;
+		}
+		return 0;
+	});
+	for (var j = 0; j < rows.length; j++) {
+		flag = true;
+		var row = rows[j];
+		html += `
+		<tr>
+			<td>${names[0]}</td>
+			<td>${row.icc}</td>
+			<td>${row.expiration_date}</td>
+		</tr>`;
 	}
 	html += `
 				</tbody>
@@ -223,9 +235,7 @@ async function GetICCs(user_id, forwardPeriod) {
 			}
 		}
 	}
-	rows.sort((a, b) => {
-		return a.expiration_date - b.expiration_date;
-	});
+
 	return rows;
 }
 
