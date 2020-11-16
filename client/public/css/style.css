@@ -1,0 +1,23 @@
+* {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+	height: 100%;
+}
+body {
+	background-attachment: fixed;
+}
+div.scrollmenu {
+	padding-left: 20px;
+	padding-right: 20px;
+	overflow: auto;
+	white-space: nowrap;
+	margin-left: 300px;
+	margin-right: 300px;
+}
+div.scrollmenu .child {
+	white-space: normal;
+	display: inline-block;
+	margin: 15px;
+}
