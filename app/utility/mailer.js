@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
 
 let transporter = nodemailer.createTransport({
-	host: "send.xtra.co.nz",
+	host: process.env.SMTPHOST,
 	port: 465,
 	secure: true,
 	auth: {
-		user: "trent_smtp@xtra.co.nz",
-		pass: "73Kenz1e",
+		user: process.env.STMPUSER,,
+		pass: process.env.SMTPPASS,
 	},
 });
 
